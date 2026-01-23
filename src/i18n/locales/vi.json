@@ -1,0 +1,45 @@
+{
+  "common": {
+    "back": "Quay lại",
+    "retry": "Thử lại",
+    "lang": "🇻🇳 Tiếng Việt",
+    "currentLabel": "🇻🇳 Tiếng Việt",
+    "nextLang": "en"
+  },
+  "home": {
+    "title": "Game Hub",
+    "subtitle": "Chọn trò chơi yêu thích của bạn!",
+    "minesweeper": "Dò Mìn",
+    "minesweeperDesc": "Thử thách trí tuệ kinh điển với 4 cấp độ từ dễ đến khó.",
+    "christmas": "Ghép Đôi Giáng Sinh",
+    "christmasDesc": "Ghép đôi bạn bè ngẫu nhiên với hiệu ứng Giáng sinh lung linh!",
+    "footer": "Được tạo với ❤️ bởi PHN"
+  },
+  "minesweeper": {
+    "title": "Dò Mìn",
+    "easy": "😊 Dễ",
+    "medium": "😐 TB",
+    "hard": "😰 Khó",
+    "expert": "💀 Siêu Khó",
+    "win": "🎉 Chiến Thắng!",
+    "lose": "😢 Thua Rồi!",
+    "playAgain": "Chơi Lại",
+    "stats": {
+      "mines": "Mìn",
+      "time": "Thời gian",
+      "score": "Điểm"
+    }
+  },
+  "christmas": {
+    "title": "Merry Christmas",
+    "inputLabel": "Nhập Danh Sách Tên",
+    "inputPlaceholder": "Ví dụ: An;Bình;Chi;Dũng...",
+    "inputHint": "Tên cách nhau bởi ; hoặc , (Nhóm 3 nếu lẻ)",
+    "btnMatch": "🎄 Ghép Đôi 🎄",
+    "btnMatching": "🎁 Đang ghép...",
+    "btnReset": "🔄 Ghép Lại",
+    "resultTitle": "Kết Quả Ghép Đôi",
+    "alertMinNames": "Vui lòng nhập ít nhất 2 tên!",
+    "oddGroupHint": "💡 Nếu số người lẻ, sẽ có 1 nhóm 3 người"
+  }
+}

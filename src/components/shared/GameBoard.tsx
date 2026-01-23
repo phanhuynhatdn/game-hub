@@ -1,6 +1,6 @@
-import React from 'react';
-import { Cell } from './Cell';
-import { Cell as CellType, GameConfig } from '../../types/minesweeper.types';
+import React from "react";
+import { Cell } from "./Cell";
+import { Cell as CellType, GameConfig } from "../../types/minesweeper.types";
 
 interface GameBoardProps {
   board: CellType[][];
@@ -15,21 +15,25 @@ export const GameBoard: React.FC<GameBoardProps> = ({
   config,
   explosionCell,
   onCellClick,
-  onRightClick
+  onRightClick,
 }) => {
-  const cellSize =
-    config.cols > 20
-      ? 'w-4 h-4 sm:w-6 sm:h-6'
-      : config.cols > 15
-      ? 'w-5 h-5 sm:w-8 sm:h-8'
-      : 'w-8 h-8 sm:w-10 sm:h-10';
+  // Senior Logic: Ép kích thước ô tối thiểu trên mobile để không bị squish
+  const minCellSize =
+    "min-w-[30px] min-h-[30px] sm:min-w-[35px] sm:min-h-[35px]";
 
   return (
-    <div className="flex justify-center mb-4 sm:mb-6 overflow-x-auto">
-      <div className="inline-block bg-gray-800 p-2 sm:p-4 rounded-xl sm:rounded-2xl shadow-2xl">
+    <div className="w-full flex justify-center mb-6">
+      {/* Container bọc ngoài cho phép scroll ngang trên mobile */}
+      <div className="w-full overflow-auto pb-4 scrollbar-thin scrollbar-thumb-white/20">
         <div
-          className="grid gap-0.5"
-          style={{ gridTemplateColumns: `repeat(${config.cols}, minmax(0, 1fr))` }}
+          className="inline-block mx-auto bg-gray-800 p-2 rounded-xl shadow-2xl border-4 border-white/5"
+          style={{
+            // Đảm bảo grid luôn giữ đúng số cột
+            display: "grid",
+            gridTemplateColumns: `repeat(${config.cols}, minmax(0, 1fr))`,
+            width: "max-content", // Quan trọng: Grid không được co lại nhỏ hơn nội dung
+            minWidth: "100%",
+          }}
         >
           {board.map((row, rowIdx) =>
             row.map((cell, colIdx) => (
@@ -39,11 +43,11 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                 row={rowIdx}
                 col={colIdx}
                 explosionCell={explosionCell}
-                cellSize={cellSize}
+                cellSize={minCellSize} // Sử dụng min-size thay vì dynamic size
                 onClick={onCellClick}
                 onRightClick={onRightClick}
               />
-            ))
+            )),
           )}
         </div>
       </div>

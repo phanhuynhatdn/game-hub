@@ -1,0 +1,44 @@
+{
+  "common": {
+    "back": "Back",
+    "retry": "Try Again",
+    "lang": "🇺🇸 English"
+  },
+  "home": {
+    "title": "Game Hub",
+    "subtitle": "Choose your favorite game!",
+    "minesweeper": "Minesweeper",
+    "minesweeperDesc": "Classic intelligence challenge with 4 difficulty levels.",
+    "christmas": "Christmas Match",
+    "christmasDesc": "Randomly match friends with festive effects!",
+    "footer": "Built with ❤️ by PHN"
+  },
+  "minesweeper": {
+    "title": "Minesweeper",
+    "easy": "😊 Easy",
+    "medium": "😐 Medium",
+    "hard": "😰 Hard",
+    "expert": "💀 Expert",
+    "win": "🎉 Victory!",
+    "lose": "😢 Game Over!",
+    "playAgain": "Play Again",
+    "stats": {
+      "mines": "Mines",
+      "time": "Time",
+      "score": "Score"
+    }
+  },
+  "christmas": {
+    "title": "Merry Christmas",
+    "inputLabel": "Enter Name List",
+    "inputPlaceholder": "Example: An;Binh;Chi;Dung...",
+    "inputHint": "Names separated by ; or , (3-person group if odd)",
+    "btnMatch": "🎄 Match Pairs 🎄",
+    "btnMatching": "🎁 Matching...",
+    "btnReset": "🔄 Match Again",
+    "resultTitle": "Matching Results",
+    "alertMinNames": "Please enter at least 2 names!",
+    "oddGroupHint": "💡 If odd, there will be one 3-person group"
+  }
+}
+
