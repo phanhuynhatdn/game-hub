@@ -1,5 +1,5 @@
 import React from "react";
-import { Bomb, Clock, Award, RotateCcw } from "lucide-react";
+import { Bomb, Clock, Award, RotateCcw, Trophy } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 interface GameStatsProps {
@@ -16,27 +16,45 @@ export const GameStats: React.FC<GameStatsProps> = ({
   onReset,
 }) => {
   const { t } = useTranslation();
+  const statCardClass =
+    "flex items-center gap-2 px-4 py-2 rounded-2xl bg-white/10 border border-white/20 backdrop-blur-md shadow-lg min-w-[100px] justify-center";
+  const labelClass = "text-white font-black text-lg drop-shadow-md";
 
   return (
-    <div className="flex gap-2 sm:gap-6 mb-4 sm:mb-6 justify-center flex-wrap">
-      <div className="bg-white/20 px-3 py-2 sm:px-6 sm:py-3 rounded-lg sm:rounded-xl flex items-center gap-1 sm:gap-2 text-white font-semibold text-xs sm:text-base">
-        <Bomb className="w-4 h-4 sm:w-5 sm:h-5 text-red-400" />
-        <span>{minesLeft}</span>
+    <div className="flex gap-3 sm:gap-6 mb-6 justify-center flex-wrap items-center">
+      {/* Mines Left - Màu đỏ */}
+      <div className={`${statCardClass} bg-rose-500/20 border-rose-400/30`}>
+        <div className="p-1.5 bg-rose-500 rounded-full shadow-inner">
+          <Bomb className="w-4 h-4 text-white" />
+        </div>
+        <span className={labelClass}>{minesLeft}</span>
       </div>
-      <div className="bg-white/20 px-3 py-2 sm:px-6 sm:py-3 rounded-lg sm:rounded-xl flex items-center gap-1 sm:gap-2 text-white font-semibold text-xs sm:text-base">
-        <Clock className="w-4 h-4 sm:w-5 sm:h-5 text-blue-400" />
-        <span>{time}s</span>
+
+      {/* Time - Màu xanh dương */}
+      <div className={`${statCardClass} bg-sky-500/20 border-sky-400/30`}>
+        <div className="p-1.5 bg-sky-500 rounded-full shadow-inner">
+          <Clock className="w-4 h-4 text-white animate-pulse" />
+        </div>
+        <span className={labelClass}>{time}s</span>
       </div>
-      <div className="bg-white/20 px-3 py-2 sm:px-6 sm:py-3 rounded-lg sm:rounded-xl flex items-center gap-1 sm:gap-2 text-white font-semibold text-xs sm:text-base">
-        <Award className="w-4 h-4 sm:w-5 sm:h-5 text-yellow-400" />
-        <span>{score}</span>
+
+      {/* Score - Màu vàng */}
+      <div className={`${statCardClass} bg-amber-500/20 border-amber-400/30`}>
+        <div className="p-1.5 bg-amber-500 rounded-full shadow-inner">
+          <Trophy className="w-4 h-4 text-white" />
+        </div>
+        <span className={labelClass}>{score}</span>
       </div>
+
+      {/* Reset Button - Nút nổi bật */}
       <button
         onClick={onReset}
-        className="bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 px-3 py-2 sm:px-6 sm:py-3 rounded-lg sm:rounded-xl flex items-center gap-1 sm:gap-2 text-white font-semibold transition-all duration-300 hover:scale-105 shadow-lg text-xs sm:text-base"
+        className="group relative px-6 py-2 bg-gradient-to-r from-emerald-400 to-teal-500 rounded-2xl shadow-[0_4px_0_#0f766e] active:shadow-none active:translate-y-[4px] transition-all border-t border-white/30"
       >
-        <RotateCcw className="w-4 h-4 sm:w-5 sm:h-5" />
-        <span className="hidden sm:inline">{t("minesweeper.playAgain")}</span>
+        <div className="flex items-center gap-2 font-bold text-white uppercase tracking-wider text-sm">
+          <RotateCcw className="w-5 h-5 group-hover:-rotate-180 transition-transform duration-500" />
+          <span className="hidden sm:inline">{t("minesweeper.playAgain")}</span>
+        </div>
       </button>
     </div>
   );

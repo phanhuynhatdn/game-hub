@@ -54,30 +54,22 @@ export const GameBoard: React.FC<GameBoardProps> = ({
   }, [containerWidth, config.cols]);
 
   return (
-    // Container chính giới hạn chiều rộng và chiều cao
-    // w-full max-w-6xl: Giới hạn chiều ngang trên màn hình siêu lớn
-    // h-[80vh]: Giới hạn chiều cao để board không chiếm hết màn hình làm mất Header
     <div
       ref={containerRef}
       className="w-full max-w-7xl flex flex-col items-center justify-start overflow-hidden px-2"
     >
-      {/* Scroll Container:
-          - Desktop: Gần như không scroll vì ta đã auto-fit size.
-          - Mobile: Scroll DỌC (overflow-y-auto) vì ta đã chuyển sang layout dọc.
-       */}
+      {/* Container Kính mờ siêu đẹp */}
       <div
-        className="relative bg-gray-800 p-2 rounded-lg shadow-2xl border-4 border-gray-600 overflow-y-auto overflow-x-hidden custom-scrollbar"
-        style={{
-          maxHeight: "75vh", // Cho phép cuộn dọc nếu board quá dài (Mobile)
-        }}
+        className="relative bg-white/10 backdrop-blur-xl p-4 rounded-3xl shadow-[0_8px_32px_rgba(0,0,0,0.2)] border border-white/20 overflow-y-auto overflow-x-hidden custom-scrollbar"
+        style={{ maxHeight: "75vh" }}
       >
         <div
-          className="grid gap-[1px] bg-gray-700"
+          className="flex flex-wrap justify-center content-start" // Dùng flex wrap hoặc grid đều được, nhưng grid chuẩn hơn
           style={{
-            // CSS Grid thần thánh: Định nghĩa số cột cứng
+            display: "grid",
             gridTemplateColumns: `repeat(${config.cols}, ${cellSize}px)`,
-            // Width fit-content để grid ôm sát các ô
             width: "fit-content",
+            // Bỏ gap ở grid cha vì ta đã margin ở Cell con để tạo rãnh đẹp hơn
           }}
         >
           {board.map((row, rowIdx) =>
@@ -88,7 +80,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                 row={rowIdx}
                 col={colIdx}
                 explosionCell={explosionCell}
-                cellSize={`${cellSize}px`} // Truyền px chính xác vào
+                cellSize={`${cellSize}px`}
                 onClick={onCellClick}
                 onRightClick={onRightClick}
               />
@@ -97,9 +89,11 @@ export const GameBoard: React.FC<GameBoardProps> = ({
         </div>
       </div>
 
-      {/* Hint UI */}
-      <div className="mt-2 text-white/30 text-xs italic">
-        {config.rows > 20 ? "💡 Cuộn dọc để xem thêm bản đồ" : " "}
+      {/* Hint UI Cute */}
+      <div className="mt-4 flex items-center gap-2 text-white/60 text-sm font-medium px-4 py-2 bg-black/20 rounded-full backdrop-blur-md">
+        {config.rows > 20
+          ? "👆 Vuốt dọc để tìm kho báu nha"
+          : "✨ Chúc bạn may mắn!"}
       </div>
     </div>
   );

@@ -20,6 +20,17 @@ export default {
           "0%, 100%": { transform: "skewY(0deg)" },
           "50%": { transform: "skewY(-6deg)" },
         },
+
+        "bounce-short": {
+          "0%, 100%": { transform: "translateY(0)" },
+          "50%": { transform: "translateY(-25%)" },
+        },
+        shake: {
+          "10%, 90%": { transform: "translate3d(-1px, 0, 0)" },
+          "20%, 80%": { transform: "translate3d(2px, 0, 0)" },
+          "30%, 50%, 70%": { transform: "translate3d(-4px, 0, 0)" },
+          "40%, 60%": { transform: "translate3d(4px, 0, 0)" },
+        },
       },
       animation: {
         "pulse-slow": "pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite",
@@ -27,6 +38,8 @@ export default {
         "flag-deploy":
           "flag-plant 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards",
         "flag-steady": "flag-wave 2s ease-in-out infinite",
+        "bounce-short": "bounce-short 0.5s infinite", // Dùng cho icon cờ/mìn nhảy nhót
+        shake: "shake 0.5s cubic-bezier(.36,.07,.19,.97) both", // Dùng khi mìn nổ
       },
     },
   },
