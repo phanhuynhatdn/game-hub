@@ -1,8 +1,8 @@
 import React, { useMemo } from "react";
 import { Flag, Bomb } from "lucide-react";
-import { Cell as CellType } from "../../types/minesweeper.types";
-import { CELL_COLORS } from "../../types/minesweeperConfig";
-import { SpecialFlag } from "../minesweeper/SpecialFlag";
+import { Cell as CellType } from "../types/index";
+import { CELL_COLORS } from "../config/index";
+import { SpecialFlag } from "./SpecialFlag";
 
 interface CellProps {
   cell: CellType;

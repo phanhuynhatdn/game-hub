@@ -1,13 +1,14 @@
 import { useState, useEffect, useCallback } from "react";
-import { Cell, Difficulty, GameStatus } from "../types/minesweeper.types";
 import { initBoard, revealCell } from "../utils/minesweeperUtils";
-import { DIFFICULTIES } from "../types/minesweeperConfig";
+
 import {
   playClickSound,
   playFlagSound,
   playExplosionSound,
   playWinSound,
-} from "../utils/soundUtils";
+} from "../../../utils/soundUtils";
+import { DIFFICULTIES } from "../config";
+import { Cell, Difficulty, GameStatus } from "../types";
 
 export const useMinesweeper = (difficulty: Difficulty) => {
   const config = DIFFICULTIES[difficulty];

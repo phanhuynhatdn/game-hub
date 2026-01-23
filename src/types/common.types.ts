@@ -1,1 +1,1 @@
-export type GameMode = 'home' | 'minesweeper' | 'christmas';
+export type GameMode = 'home' | 'minesweeper' | 'christmas' | 'admin';

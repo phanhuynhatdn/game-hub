@@ -1,7 +1,7 @@
 import React from 'react';
-import { Gamepad2 } from 'lucide-react';
-import { GameMode } from '../types/minesweeper.types';
+import { Gamepad2, Settings } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { GameMode } from '../types/common.types';
 
 interface HomePageProps {
   onSelectGame: (game: GameMode) => void;
@@ -17,6 +17,15 @@ export const HomePage: React.FC<HomePageProps> = ({ onSelectGame }) => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-900 via-purple-900 to-pink-900 flex items-center justify-center p-4 overflow-hidden relative">
+      {/* <div className="fixed bottom-6 right-6 z-50">
+        <button 
+          onClick={() => onSelectGame('admin')}
+          className="p-3 bg-white/5 hover:bg-white/10 text-white/20 hover:text-white/80 rounded-full transition-all backdrop-blur-sm"
+          title="Admin Settings"
+        >
+          <Settings size={20} />
+        </button>
+      </div> */}
       <button 
         onClick={toggleLanguage}
         className="fixed top-4 right-4 bg-white/20 text-white px-4 py-2 rounded-full backdrop-blur-md z-50"

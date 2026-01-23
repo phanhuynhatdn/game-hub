@@ -1,6 +1,6 @@
-import { useState, useCallback } from 'react';
-import { Pair } from '../types/christmas.types';
-import { parseNames, createPairs } from '../utils/christmasUtils';
+import { useState, useCallback } from "react";
+import { createPairs, parseNames } from "../utils";
+import { Pair } from "../types";
 
 export const useChristmasMatching = (initialNames: string) => {
   const [inputNames, setInputNames] = useState(initialNames);
@@ -13,7 +13,7 @@ export const useChristmasMatching = (initialNames: string) => {
   const handleMatch = useCallback(() => {
     const names = parseNames(inputNames);
     if (names.length < 2) {
-      alert('Vui lòng nhập ít nhất 2 tên!');
+      alert("Vui lòng nhập ít nhất 2 tên!");
       return;
     }
 
@@ -47,6 +47,6 @@ export const useChristmasMatching = (initialNames: string) => {
     snowflakes,
     showInput,
     handleMatch,
-    handleReset
+    handleReset,
   };
 };

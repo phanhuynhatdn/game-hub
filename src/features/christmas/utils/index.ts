@@ -1,4 +1,4 @@
-import { Pair } from '../types/christmas.types';
+import { Pair } from "../types";
 
 export const parseNames = (input: string): string[] =>
   input

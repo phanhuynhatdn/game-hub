@@ -1,7 +1,7 @@
 import React from "react";
 import { Trophy } from "lucide-react";
-import { GameStatus } from "../../types/minesweeper.types";
 import { useTranslation } from "react-i18next";
+import { GameStatus } from "../types";
 
 interface GameResultProps {
   status: GameStatus;

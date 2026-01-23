@@ -1,7 +1,7 @@
 import React from "react";
 import { Gift } from "lucide-react";
 import { useTranslation } from "react-i18next"; // Thêm i18n
-import { Pair } from "../../types/christmas.types";
+import { Pair } from "../types";
 
 interface PairResultProps {
   pairs: Pair[];
@@ -15,8 +15,11 @@ export const PairResult: React.FC<PairResultProps> = ({ pairs }) => {
       {/* Tiêu đề kết quả đã i18n */}
       <h2 className="text-2xl sm:text-3xl font-bold text-center text-white mb-4 sm:mb-8 flex items-center justify-center gap-2 sm:gap-3">
         <Gift className="animate-bounce text-yellow-300" />
-        {t('christmas.resultTitle')}
-        <Gift className="animate-bounce text-yellow-300" style={{ animationDelay: "0.2s" }} />
+        {t("christmas.resultTitle")}
+        <Gift
+          className="animate-bounce text-yellow-300"
+          style={{ animationDelay: "0.2s" }}
+        />
       </h2>
 
       <div className="space-y-3 sm:space-y-4">
@@ -36,7 +39,7 @@ export const PairResult: React.FC<PairResultProps> = ({ pairs }) => {
                     </span>
                     <span className="tracking-wide">{name}</span>
                   </div>
-                  
+
                   {/* Hiển thị trái tim giữa các thành viên */}
                   {i < pair.names.length - 1 && (
                     <span className="text-2xl sm:text-3xl animate-pulse text-red-300 drop-shadow-md">

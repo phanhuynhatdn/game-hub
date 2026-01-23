@@ -1,4 +1,4 @@
-import { Difficulty, GameConfig } from '../types/minesweeper.types';
+import { Difficulty, GameConfig } from "../types";
 
 export const DIFFICULTIES: Record<Difficulty, GameConfig> = {
   easy: { rows: 9, cols: 9, mines: 10, points: 100 },

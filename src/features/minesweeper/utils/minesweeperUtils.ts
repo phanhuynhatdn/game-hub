@@ -1,9 +1,9 @@
-import { Cell, GameConfig } from '../types/minesweeper.types';
+import { Cell, GameConfig } from "../types";
 
 export const initBoard = (
   config: GameConfig,
   safeRow?: number,
-  safeCol?: number
+  safeCol?: number,
 ): Cell[][] => {
   const board: Cell[][] = Array(config.rows)
     .fill(null)
@@ -13,8 +13,8 @@ export const initBoard = (
         .map(() => ({
           isMine: false,
           neighborMines: 0,
-          state: 'hidden' as const
-        }))
+          state: "hidden" as const,
+        })),
     );
 
   let placed = 0;
@@ -65,15 +65,15 @@ export const revealCell = (
   board: Cell[][],
   row: number,
   col: number,
-  config: GameConfig
+  config: GameConfig,
 ): Cell[][] => {
-  const newBoard = board.map(r => r.map(c => ({ ...c })));
+  const newBoard = board.map((r) => r.map((c) => ({ ...c })));
 
   const reveal = (r: number, c: number) => {
     if (r < 0 || r >= config.rows || c < 0 || c >= config.cols) return;
-    if (newBoard[r][c].state !== 'hidden') return;
+    if (newBoard[r][c].state !== "hidden") return;
 
-    newBoard[r][c].state = 'revealed';
+    newBoard[r][c].state = "revealed";
 
     if (newBoard[r][c].neighborMines === 0 && !newBoard[r][c].isMine) {
       for (let dr = -1; dr <= 1; dr++) {

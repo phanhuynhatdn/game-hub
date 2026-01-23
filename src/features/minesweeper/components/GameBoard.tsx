@@ -1,6 +1,6 @@
-import React, { useMemo } from 'react';
-import { Cell } from './Cell';
-import { Cell as CellType, GameConfig } from '../../types/minesweeper.types';
+import React, { useMemo } from "react";
+import { Cell } from "./Cell";
+import { Cell as CellType, GameConfig } from "../types/index";
 
 interface GameBoardProps {
   board: CellType[][];
@@ -15,7 +15,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
   config,
   explosionCell,
   onCellClick,
-  onRightClick
+  onRightClick,
 }) => {
   /**
    * Senior Logic: Tính toán Cell Size động hoàn toàn
@@ -26,8 +26,8 @@ export const GameBoard: React.FC<GameBoardProps> = ({
     // Tính toán kích thước ô dựa trên số cột để ép nó vừa khít chiều rộng màn hình (ưu tiên không scroll ngang)
     // Đối với Expert (30 cột), 90vw / 30 = ~12px (Quá nhỏ).
     // Vì vậy ta áp dụng ngưỡng tối thiểu để đảm bảo UX.
-    const calculatedWidth = 90 / config.cols; 
-    
+    const calculatedWidth = 90 / config.cols;
+
     return {
       // mobileSize: Nếu bảng rộng, cho phép nhỏ xuống 20px (ngưỡng tối thiểu nhìn thấy số)
       // desktopSize: Không bao giờ to quá 45px để tránh thô.
@@ -39,13 +39,13 @@ export const GameBoard: React.FC<GameBoardProps> = ({
     <div className="w-full flex flex-col items-center mb-6 overflow-hidden">
       {/* Scroll Container: Chỉ xuất hiện khi bảng thực sự vượt quá khả năng hiển thị tối thiểu (Expert trên Mobile) */}
       <div className="w-full overflow-x-auto scrollbar-hide flex justify-start md:justify-center p-4">
-        <div 
+        <div
           className="inline-grid bg-gray-800 p-1 rounded-lg shadow-[0_0_50px_rgba(0,0,0,0.5)] border-2 border-gray-600 select-none"
-          style={{ 
+          style={{
             gridTemplateColumns: `repeat(${config.cols}, ${cellSize.width})`,
             // Ép Grid luôn giữ tỉ lệ vuông và không bị méo bởi Flexbox
-            width: 'max-content',
-            minWidth: 'min-content'
+            width: "max-content",
+            minWidth: "min-content",
           }}
         >
           {board.map((row, rowIdx) =>
@@ -61,11 +61,11 @@ export const GameBoard: React.FC<GameBoardProps> = ({
                 onClick={onCellClick}
                 onRightClick={onRightClick}
               />
-            ))
+            )),
           )}
         </div>
       </div>
-      
+
       {/* Chỉ dẫn cho người dùng Mobile nếu bảng quá lớn */}
       {config.cols > 15 && (
         <div className="md:hidden text-white/40 text-[10px] animate-pulse">
