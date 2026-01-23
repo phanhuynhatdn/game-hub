@@ -2,18 +2,18 @@
   "common": {
     "back": "Quay lại",
     "retry": "Thử lại",
-    "lang": "🇻🇳 Tiếng Việt",
-    "currentLabel": "🇻🇳 Tiếng Việt",
-    "nextLang": "en"
+    "switchLabel": "Đổi ngôn ngữ"
   },
   "home": {
     "title": "Game Hub",
-    "subtitle": "Chọn trò chơi yêu thích của bạn!",
+    "subtitle": "Chọn trò chơi yêu thích!",
     "minesweeper": "Dò Mìn",
-    "minesweeperDesc": "Thử thách trí tuệ kinh điển với 4 cấp độ từ dễ đến khó.",
+    "minesweeperDesc": "Thử thách trí tuệ kinh điển.",
     "christmas": "Ghép Đôi Giáng Sinh",
-    "christmasDesc": "Ghép đôi bạn bè ngẫu nhiên với hiệu ứng Giáng sinh lung linh!",
-    "footer": "Được tạo với ❤️ bởi PHN"
+    "christmasDesc": "Tìm cặp đôi hoàn hảo.",
+    "tetRunner": "Dọn Nhà Đón Tết",
+    "tetRunnerDesc": "Bay qua bát đĩa và né những câu hỏi vô duyên ngày Tết!",
+    "footer": "Created by PHN"
   },
   "minesweeper": {
     "title": "Dò Mìn",
@@ -41,5 +41,27 @@
     "resultTitle": "Kết Quả Ghép Đôi",
     "alertMinNames": "Vui lòng nhập ít nhất 2 tên!",
     "oddGroupHint": "💡 Nếu số người lẻ, sẽ có 1 nhóm 3 người"
+  },
+  "tetRunner": {
+    "title": "Thử Thách Dọn Nhà",
+    "gameOverTitle": "BỊ TIỀN ĐÌNH!",
+    "gameOverSub": "Nhà chưa dọn xong mà đã đòi đi chơi?",
+    "btnPlay": "DỌN NHÀ NGAY",
+    "btnRetry": "Dọn lại từ đầu",
+    "shareText": "Khoe thành tích dọn dẹp",
+    "questions": [
+      "Bao giờ lấy chồng?",
+      "Lương tháng bao nhiêu?",
+      "Có người yêu chưa?",
+      "Thưởng Tết nhiều không?",
+      "Sao dạo này béo thế?",
+      "Khi nào đẻ đứa thứ 2?",
+      "Lương tháng nhiêu con?",
+      "Người yêu đâu?",
+      "Năm nay có thưởng không?",
+      "Làm công ty gì lạ thế?",
+      "Định bao giờ mới ổn định?",
+      "Nhà cửa dọn xong chưa?"
+    ]
   }
 }

@@ -2,8 +2,10 @@ class SoundEngine {
   private static ctx: AudioContext | null = null;
 
   private static getCtx(): AudioContext {
-    if (!this.ctx || this.ctx.state === 'suspended') {
-      this.ctx = new (window.AudioContext || (window as any).webkitAudioContext)();
+    if (!this.ctx || this.ctx.state === "suspended") {
+      this.ctx = new (
+        window.AudioContext || (window as any).webkitAudioContext
+      )();
     }
     return this.ctx;
   }
@@ -12,7 +14,7 @@ class SoundEngine {
     const ctx = this.getCtx();
     const osc = ctx.createOscillator();
     const gain = ctx.createGain();
-    osc.type = 'sine';
+    osc.type = "sine";
     osc.frequency.setValueAtTime(800, ctx.currentTime);
     osc.frequency.exponentialRampToValueAtTime(100, ctx.currentTime + 0.1);
     gain.gain.setValueAtTime(0.2, ctx.currentTime);
@@ -27,7 +29,7 @@ class SoundEngine {
     const ctx = this.getCtx();
     const osc = ctx.createOscillator();
     const gain = ctx.createGain();
-    osc.type = 'triangle';
+    osc.type = "triangle";
     osc.frequency.setValueAtTime(150, ctx.currentTime);
     osc.frequency.linearRampToValueAtTime(50, ctx.currentTime + 0.15);
     gain.gain.setValueAtTime(0.3, ctx.currentTime);
@@ -47,7 +49,7 @@ class SoundEngine {
     const noise = ctx.createBufferSource();
     noise.buffer = buffer;
     const filter = ctx.createBiquadFilter();
-    filter.type = 'lowpass';
+    filter.type = "lowpass";
     filter.frequency.setValueAtTime(1000, ctx.currentTime);
     filter.frequency.exponentialRampToValueAtTime(40, ctx.currentTime + 0.5);
     const gain = ctx.createGain();
@@ -67,7 +69,10 @@ class SoundEngine {
       const gain = ctx.createGain();
       osc.frequency.value = freq;
       gain.gain.setValueAtTime(0.1, ctx.currentTime + i * 0.1);
-      gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + i * 0.1 + 0.3);
+      gain.gain.exponentialRampToValueAtTime(
+        0.01,
+        ctx.currentTime + i * 0.1 + 0.3,
+      );
       osc.connect(gain);
       gain.connect(ctx.destination);
       osc.start(ctx.currentTime + i * 0.1);
@@ -75,6 +80,18 @@ class SoundEngine {
     });
   }
 }
+
+export const playCountdownSound = (isEnd: boolean) => {
+  const ctx = new (window.AudioContext || (window as any).webkitAudioContext)();
+  const osc = ctx.createOscillator();
+  const gain = ctx.createGain();
+  osc.frequency.setValueAtTime(isEnd ? 880 : 440, ctx.currentTime);
+  gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.1);
+  osc.connect(gain);
+  gain.connect(ctx.destination);
+  osc.start();
+  osc.stop(ctx.currentTime + 0.1);
+};
 
 // Export các hàm cụ thể thay vì đối tượng để tránh lỗi call signature
 export const playClickSound = () => SoundEngine.playClick();

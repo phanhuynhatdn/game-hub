@@ -1,17 +1,19 @@
 {
   "common": {
     "back": "Back",
-    "retry": "Try Again",
-    "lang": "🇺🇸 English"
+    "retry": "Retry",
+    "switchLabel": "Switch Language"
   },
   "home": {
     "title": "Game Hub",
     "subtitle": "Choose your favorite game!",
     "minesweeper": "Minesweeper",
-    "minesweeperDesc": "Classic intelligence challenge with 4 difficulty levels.",
+    "minesweeperDesc": "Classic puzzle challenge.",
     "christmas": "Christmas Match",
-    "christmasDesc": "Randomly match friends with festive effects!",
-    "footer": "Built with ❤️ by PHN"
+    "christmasDesc": "Find the perfect pair.",
+    "tetRunner": "Tet Cleanup",
+    "tetRunnerDesc": "Fly over dishes and dodge annoying Tet questions!",
+    "footer": "Created by PHN"
   },
   "minesweeper": {
     "title": "Minesweeper",
@@ -39,6 +41,21 @@
     "resultTitle": "Matching Results",
     "alertMinNames": "Please enter at least 2 names!",
     "oddGroupHint": "💡 If odd, there will be one 3-person group"
+  },
+  "tetRunner": {
+    "title": "Clean Up Challenge",
+    "gameOverTitle": "DIZZY!",
+    "gameOverSub": "House not clean, yet you want to go out?",
+    "btnPlay": "CLEAN NOW",
+    "shareText": "Share Score",
+    "hint": "Tap or Click to Jump",
+    "questions": [
+      "When will you marry?",
+      "What is your salary?",
+      "Have boyfriend yet?",
+      "Big Tet bonus?",
+      "Why so fat lately?",
+      "When having 2nd baby?"
+    ]
   }
 }
-
