@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import { initBoard, revealCell } from "../utils/minesweeperUtils";
+import { initBoard, revealCell } from "../utils";
 
 import {
   playClickSound,
@@ -9,10 +9,11 @@ import {
 } from "../../../utils/soundUtils";
 import { DIFFICULTIES } from "../config";
 import { Cell, Difficulty, GameStatus } from "../types";
+import { getResponsiveConfig } from "../utils/configUtils";
 
 export const useMinesweeper = (difficulty: Difficulty) => {
-  const config = DIFFICULTIES[difficulty];
-  const [board, setBoard] = useState<Cell[][]>(() => initBoard(config));
+  const [config, setConfig] = useState(() => getResponsiveConfig(difficulty));
+  const [board, setBoard] = useState<Cell[][]>([]);
   const [gameStatus, setGameStatus] = useState<GameStatus>("playing");
   const [flagCount, setFlagCount] = useState(0);
   const [score, setScore] = useState(0);
@@ -41,7 +42,9 @@ export const useMinesweeper = (difficulty: Difficulty) => {
   }, [isTimerActive, gameStatus]);
 
   const resetGame = useCallback(() => {
-    setBoard(initBoard(config));
+    const currentConfig = getResponsiveConfig(difficulty);
+    setConfig(currentConfig);
+    setBoard(initBoard(currentConfig));
     setGameStatus("playing");
     setFlagCount(0);
     setScore(0);
@@ -49,7 +52,11 @@ export const useMinesweeper = (difficulty: Difficulty) => {
     setIsTimerActive(false);
     setFirstClick(true);
     setExplosionCell(null);
-  }, [config]);
+  }, [difficulty]);
+
+  useEffect(() => {
+    resetGame();
+  }, [resetGame]);
 
   const handleCellClick = useCallback(
     (row: number, col: number) => {

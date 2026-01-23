@@ -52,7 +52,7 @@ export const Cell: React.FC<CellProps> = ({
   const cellClass = useMemo(() => {
     // Loại bỏ các class w-x h-x cố định
     const base =
-      "flex items-center justify-center cursor-pointer transition-all duration-100 border aspect-square";
+      "flex items-center justify-center cursor-pointer transition-colors duration-75 select-none";
 
     if (cell.state === "revealed") {
       if (cell.isMine) {
@@ -67,7 +67,11 @@ export const Cell: React.FC<CellProps> = ({
   return (
     <div
       className={cellClass}
-      style={{ width: cellSize, height: cellSize }} // Ép kích thước theo tính toán từ GameBoard
+      style={{
+        width: cellSize,
+        height: cellSize,
+        fontSize: `calc(${cellSize} * 0.6)`,
+      }}
       onClick={() => onClick(row, col)}
       onContextMenu={(e) => onRightClick(e, row, col)}
     >
