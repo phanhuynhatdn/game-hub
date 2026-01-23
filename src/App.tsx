@@ -1,26 +1,20 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from 'react';
+import { GameMode } from './types/minesweeper.types';
+import { HomePage } from './components/HomePage';
+import { MinesweeperGame } from './components/games/MinesweeperGame';
+import { ChristmasMatching } from './components/games/ChristmasMatching';
 
-function App() {
+
+const App: React.FC = () => {
+  const [gameMode, setGameMode] = useState<GameMode>('home');
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <main className="antialiased text-slate-900">
+      {gameMode === 'home' && <HomePage onSelectGame={setGameMode} />}
+      {gameMode === 'minesweeper' && <MinesweeperGame onBack={() => setGameMode('home')} />}
+      {gameMode === 'christmas' && <ChristmasMatching onBack={() => setGameMode('home')} />}
+    </main>
   );
-}
+};
 
 export default App;
