@@ -58,6 +58,11 @@ export const HomePage: React.FC<HomePageProps> = ({ onSelectGame }) => {
     return cfg ? cfg.isActive : true;
   });
 
+  const isGameActive = (gameId: string) => {
+    const config = gameConfigs.find((c) => c.gameId === gameId);
+    return config ? config.isActive : true;
+  };
+
   // Auto-scroll chat to bottom
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
