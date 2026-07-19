@@ -1,79 +1,82 @@
 import React from "react";
-import { Gamepad2, Languages } from "lucide-react";
+import { Gamepad2 } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { motion } from "framer-motion";
 import { GAME_REGISTRY } from "../core/config/gameRegistry";
+import { GameCard } from "./GameCard";
+import { AppRoute } from "../types/common.types";
+import { InteractiveBackdrop } from "./InteractiveBackdrop";
 
 interface HomePageProps {
-  onSelectGame: (gameId: string) => void;
+  onSelectGame: (gameId: AppRoute) => void;
 }
 
 export const HomePage: React.FC<HomePageProps> = ({ onSelectGame }) => {
-  const { t, i18n } = useTranslation();
-
-  // Logic: Xác định ngôn ngữ hiện tại và ngôn ngữ đích
-  const currentLang = i18n.resolvedLanguage || "vi";
-  const targetLang = currentLang.startsWith("vi") ? "en" : "vi";
-
-  // Label hiển thị trên nút (Hiển thị ngôn ngữ ĐÍCH để người dùng biết bấm vào sẽ ra cái gì)
-  const switchLabel = targetLang === "en" ? "🇺🇸 English" : "🇻🇳 Tiếng Việt";
-
-  const toggleLanguage = () => {
-    i18n.changeLanguage(targetLang);
-  };
+  const { t } = useTranslation();
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-900 via-purple-900 to-pink-900 flex items-center justify-center p-4 overflow-hidden relative">
-      {/* Nút chuyển ngôn ngữ: Hiển thị ngôn ngữ ĐÍCH */}
-      <button
-        onClick={toggleLanguage}
-        className="fixed top-6 right-6 z-50 flex items-center gap-2 bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/30 px-5 py-2.5 rounded-2xl text-white font-bold transition-all shadow-xl active:scale-95 group"
-        title={t("common.switchLabel")} // Tooltip hỗ trợ accessibility
-      >
-        <Languages className="w-5 h-5 text-yellow-400 group-hover:rotate-12 transition-transform" />
-        <span>{switchLabel}</span>
-      </button>
+    <div className="min-h-screen bg-[#030014] flex items-center justify-center p-4 md:p-8 overflow-hidden relative">
+      {/* 1. Starry cursor-following background */}
+      <InteractiveBackdrop />
 
-      <div className="relative z-10 text-center max-w-6xl w-full">
-        <div className="mb-12 animate-bounce-slow">
-          <Gamepad2 className="w-24 h-24 mx-auto text-yellow-300 mb-6 animate-pulse" />
-          <h1 className="text-5xl md:text-7xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 via-pink-400 to-purple-400 mb-4 drop-shadow-sm">
+      {/* 2. Floating Ambient Glow Spheres (Aurora) */}
+      <div className="absolute top-1/4 left-1/4 w-80 md:w-96 h-80 md:h-96 rounded-full bg-indigo-700/15 blur-[100px] animate-aurora-1 pointer-events-none z-0"></div>
+      <div className="absolute bottom-1/4 right-1/4 w-80 md:w-96 h-80 md:h-96 rounded-full bg-rose-600/10 blur-[120px] animate-aurora-2 pointer-events-none z-0"></div>
+
+
+      <div className="relative z-10 text-center max-w-6xl w-full py-12 md:py-20">
+        
+        {/* Title Block */}
+        <motion.div 
+          initial={{ y: -40, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ type: "spring", stiffness: 80, damping: 15 }}
+          className="mb-16 flex flex-col items-center select-none"
+        >
+          {/* Logo Frame */}
+          <div className="relative mb-6">
+            <div className="absolute inset-0 bg-indigo-500/20 blur-xl rounded-full scale-110"></div>
+            <div className="relative bg-slate-900/60 border border-white/10 p-5 rounded-full shadow-glass-glow animate-float">
+              <Gamepad2 className="w-14 h-14 text-indigo-400 drop-shadow-[0_0_10px_rgba(129,140,248,0.5)]" />
+            </div>
+          </div>
+
+          {/* Main Title */}
+          <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight text-white mb-4 bg-clip-text text-transparent bg-gradient-to-r from-slate-100 via-indigo-200 to-indigo-100 text-glow">
             {t("home.title")}
           </h1>
-          <p className="text-xl text-white/90 font-semibold italic">
-            {t("home.subtitle")}
-          </p>
-        </div>
+          
+          {/* Subtitle Badge */}
+          <div className="inline-block px-5 py-1.5 rounded-full border border-indigo-500/20 bg-indigo-500/5 backdrop-blur-md">
+            <p className="text-sm md:text-base font-semibold text-indigo-300 tracking-wider uppercase">
+              {t("home.subtitle")}
+            </p>
+          </div>
+        </motion.div>
 
-        {/* Grid Games */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 px-4">
-          {GAME_REGISTRY.map((game) => (
-            <button
-              key={game.id}
-              onClick={() => onSelectGame(game.id)}
-              className={`group relative bg-gradient-to-br ${game.thumbnailColor} rounded-3xl p-8 md:p-10 shadow-2xl transition-all duration-500 hover:scale-105 hover:rotate-1 border-4 border-white/20 overflow-hidden active:scale-95`}
-            >
-              <div className="absolute inset-0 bg-white/0 group-hover:bg-white/5 transition-colors" />
-
-              <div className="relative z-10">
-                <div className="text-7xl mb-6 transition-transform group-hover:scale-110 duration-300">
-                  {game.icon}
-                </div>
-                {/* Đảm bảo key trong json phải khớp với game.titleKey */}
-                <h2 className="text-2xl md:text-3xl font-bold text-white mb-4">
-                  {t(game.titleKey)}
-                </h2>
-                <p className="text-white/80 text-sm md:text-base leading-relaxed line-clamp-3">
-                  {t(game.descriptionKey)}
-                </p>
-              </div>
-            </button>
+        {/* Staggered Game Cards List */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 px-4">
+          {GAME_REGISTRY.map((game, index) => (
+            <GameCard 
+              key={game.id} 
+              game={game} 
+              onSelect={onSelectGame} 
+              index={index} 
+            />
           ))}
         </div>
 
-        <div className="mt-16 text-white/40 text-sm font-medium tracking-widest">
+        {/* Footer */}
+        <motion.div 
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 0.6 }}
+          transition={{ delay: 0.8, duration: 1 }}
+          className="mt-20 text-slate-500 text-xs font-semibold tracking-[0.2em] uppercase max-w-md mx-auto"
+        >
           {t("home.footer")}
-        </div>
+        </motion.div>
       </div>
     </div>
   );
 };
+export default HomePage;

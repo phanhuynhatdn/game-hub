@@ -2,8 +2,8 @@ import { Pair } from "../types";
 
 export const parseNames = (input: string): string[] =>
   input
-    .split(/[;,]/)
-    .map(n => n.trim())
+    .split(/[;,\n]+/) // Support newlines as well
+    .map(n => n.trim().replace(/[^a-zA-ZÀ-ỹ0-9 ]/g, "")) // Basic XSS/Injection prevent, allow vietnamese
     .filter(n => n.length > 0);
 
 export const createPairs = (names: string[]): Pair[] => {

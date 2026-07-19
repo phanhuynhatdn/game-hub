@@ -1,5 +1,4 @@
 import React, { useMemo } from "react";
-
 import { useTranslation } from "react-i18next";
 import { Difficulty } from "../types";
 
@@ -12,11 +11,8 @@ export const DifficultySelector: React.FC<DifficultySelectorProps> = ({
   difficulty,
   onChange,
 }) => {
-  // HOOK phải nằm ở đây (bên trong component)
   const { t } = useTranslation();
 
-  // Dùng useMemo để tối ưu performance, tránh khởi tạo lại mảng khi re-render không cần thiết
-  // nhưng vẫn đảm bảo cập nhật khi ngôn ngữ (t) thay đổi
   const options = useMemo(
     () => [
       { value: "easy", label: t("minesweeper.easy") },
@@ -28,15 +24,15 @@ export const DifficultySelector: React.FC<DifficultySelectorProps> = ({
   );
 
   return (
-    <div className="flex gap-1 sm:gap-2 mb-4 sm:mb-6 justify-center flex-wrap">
+    <div className="flex gap-2 mb-6 justify-center flex-wrap">
       {options.map((opt) => (
         <button
           key={opt.value}
           onClick={() => onChange(opt.value as Difficulty)}
-          className={`px-2 py-1.5 sm:px-6 sm:py-3 rounded-lg sm:rounded-xl text-xs sm:text-base font-semibold transition-all duration-300 ${
+          className={`px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all duration-300 border backdrop-blur-md cursor-pointer ${
             difficulty === opt.value
-              ? "bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg scale-110"
-              : "bg-white/20 text-white hover:bg-white/30"
+              ? "bg-indigo-600/30 text-indigo-200 border-indigo-500/50 shadow-neon-blue scale-105"
+              : "bg-white/5 text-slate-400 border-white/5 hover:bg-white/10 hover:text-slate-200"
           }`}
         >
           {opt.label}
@@ -45,3 +41,4 @@ export const DifficultySelector: React.FC<DifficultySelectorProps> = ({
     </div>
   );
 };
+export default DifficultySelector;

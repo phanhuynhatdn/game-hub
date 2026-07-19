@@ -4,6 +4,9 @@ export default {
   plugins: [],
   theme: {
     extend: {
+      fontFamily: {
+        sans: ['Outfit', 'sans-serif'],
+      },
       keyframes: {
         "flag-plant": {
           "0%": {
@@ -40,6 +43,14 @@ export default {
         "flag-steady": "flag-wave 2s ease-in-out infinite",
         "bounce-short": "bounce-short 0.5s infinite", // Dùng cho icon cờ/mìn nhảy nhót
         shake: "shake 0.5s cubic-bezier(.36,.07,.19,.97) both", // Dùng khi mìn nổ
+      },
+      boxShadow: {
+        'glass': '0 8px 32px 0 rgba(0, 0, 0, 0.3)',
+        'glass-glow': '0 8px 32px 0 rgba(99, 102, 241, 0.15)',
+        'neon-blue': '0 0 20px 2px rgba(56, 189, 248, 0.45)',
+        'neon-pink': '0 0 20px 2px rgba(244, 63, 94, 0.45)',
+        'neon-yellow': '0 0 20px 2px rgba(253, 224, 71, 0.45)',
+        'neon-green': '0 0 20px 2px rgba(34, 197, 94, 0.45)',
       },
     },
   },

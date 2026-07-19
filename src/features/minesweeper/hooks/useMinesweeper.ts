@@ -7,14 +7,13 @@ import {
   playExplosionSound,
   playWinSound,
 } from "../../../utils/soundUtils";
-import { DIFFICULTIES } from "../config";
-import { Cell, Difficulty, GameStatus } from "../types";
+import { Cell, Difficulty, GameStatus, CellState } from "../types";
 import { getResponsiveConfig } from "../utils/configUtils";
 
 export const useMinesweeper = (difficulty: Difficulty) => {
   const [config, setConfig] = useState(() => getResponsiveConfig(difficulty));
   const [board, setBoard] = useState<Cell[][]>([]);
-  const [gameStatus, setGameStatus] = useState<GameStatus>("playing");
+  const [gameStatus, setGameStatus] = useState<GameStatus>(GameStatus.PLAYING);
   const [flagCount, setFlagCount] = useState(0);
   const [score, setScore] = useState(0);
   const [time, setTime] = useState(0);
@@ -32,7 +31,7 @@ export const useMinesweeper = (difficulty: Difficulty) => {
   useEffect(() => {
     let interval: ReturnType<typeof setInterval>;
 
-    if (isTimerActive && gameStatus === "playing") {
+    if (isTimerActive && gameStatus === GameStatus.PLAYING) {
       interval = setInterval(() => setTime((t) => t + 1), 1000);
     }
 
@@ -45,7 +44,7 @@ export const useMinesweeper = (difficulty: Difficulty) => {
     const currentConfig = getResponsiveConfig(difficulty);
     setConfig(currentConfig);
     setBoard(initBoard(currentConfig));
-    setGameStatus("playing");
+    setGameStatus(GameStatus.PLAYING);
     setFlagCount(0);
     setScore(0);
     setTime(0);
@@ -60,7 +59,7 @@ export const useMinesweeper = (difficulty: Difficulty) => {
 
   const handleCellClick = useCallback(
     (row: number, col: number) => {
-      if (gameStatus !== "playing" || board[row][col].state === "flagged")
+      if (gameStatus !== GameStatus.PLAYING || board[row][col].state === CellState.FLAGGED)
         return;
 
       if (firstClick) {
@@ -80,11 +79,11 @@ export const useMinesweeper = (difficulty: Difficulty) => {
           const newBoard = board.map((r) => r.map((c) => ({ ...c })));
           newBoard.forEach((r) =>
             r.forEach((c) => {
-              if (c.isMine) c.state = "revealed";
+              if (c.isMine) c.state = CellState.REVEALED;
             }),
           );
           setBoard(newBoard);
-          setGameStatus("lost");
+          setGameStatus(GameStatus.LOST);
           setIsTimerActive(false);
         }, 300);
         return;
@@ -96,14 +95,14 @@ export const useMinesweeper = (difficulty: Difficulty) => {
 
       const revealed = newBoard
         .flat()
-        .filter((c) => c.state === "revealed").length;
+        .filter((c) => c.state === CellState.REVEALED).length;
       const totalSafe = config.rows * config.cols - config.mines;
 
       if (revealed === totalSafe) {
         playWinSound();
         const timeBonus = Math.max(0, 500 - time * 2);
         setScore(config.points + timeBonus);
-        setGameStatus("won");
+        setGameStatus(GameStatus.WON);
         setIsTimerActive(false);
       }
     },
@@ -113,17 +112,17 @@ export const useMinesweeper = (difficulty: Difficulty) => {
   const handleRightClick = useCallback(
     (e: React.MouseEvent, row: number, col: number) => {
       e.preventDefault();
-      if (gameStatus !== "playing" || board[row][col].state === "revealed")
+      if (gameStatus !== GameStatus.PLAYING || board[row][col].state === CellState.REVEALED)
         return;
 
       const newBoard = board.map((r) => r.map((c) => ({ ...c })));
       playFlagSound();
 
-      if (newBoard[row][col].state === "hidden") {
-        newBoard[row][col].state = "flagged";
+      if (newBoard[row][col].state === CellState.HIDDEN) {
+        newBoard[row][col].state = CellState.FLAGGED;
         setFlagCount((c) => c + 1);
       } else {
-        newBoard[row][col].state = "hidden";
+        newBoard[row][col].state = CellState.HIDDEN;
         setFlagCount((c) => c - 1);
       }
       setBoard(newBoard);

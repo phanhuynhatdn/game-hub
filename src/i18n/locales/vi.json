@@ -7,6 +7,8 @@
   "home": {
     "title": "Game Hub",
     "subtitle": "Chọn trò chơi yêu thích!",
+    "ambientFocus": "Trạm Thư Giãn",
+    "ambientFocusDesc": "Tập trung, thư giãn và chill.",
     "minesweeper": "Dò Mìn",
     "minesweeperDesc": "Thử thách trí tuệ kinh điển.",
     "christmas": "Ghép Đôi Giáng Sinh",

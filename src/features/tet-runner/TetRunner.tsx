@@ -1,8 +1,13 @@
 import React, { useEffect, useRef, useMemo } from "react";
-import { Home, RotateCcw, Share2 } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { motion } from "framer-motion";
+import { Home } from "lucide-react";
 import { useTetRunner } from "./hooks/useTetRunner";
 import { CANVAS_BASE_WIDTH, CANVAS_BASE_HEIGHT } from "./utils/constants";
+import { TetRunnerState } from "./types";
+import { IdleOverlay } from "./components/IdleOverlay";
+import { CountdownOverlay } from "./components/CountdownOverlay";
+import { GameOverOverlay } from "./components/GameOverOverlay";
 
 interface TetRunnerProps {
   onBack: () => void;
@@ -12,12 +17,10 @@ const TetRunner: React.FC<TetRunnerProps> = ({ onBack }) => {
   const { t } = useTranslation();
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
-  // SENIOR: Lấy data từ i18n và memoize để tránh re-render không cần thiết truyền vào hook
   const questions = useMemo(() => {
     return (t("tetRunner.questions", { returnObjects: true }) as string[]) || [];
   }, [t]);
 
-  // Dependency Injection: Truyền câu hỏi vào hook
   const {
     state,
     score,
@@ -32,185 +35,170 @@ const TetRunner: React.FC<TetRunnerProps> = ({ onBack }) => {
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
-    const ctx = canvas.getContext("2d", { alpha: false }); // Optimize alpha false nếu không cần trong suốt nền
+    const ctx = canvas.getContext("2d", { alpha: false });
     if (!ctx) return;
 
     let animId: number;
 
     const render = () => {
-      // 1. Update Physics Logic
       update(ctx);
 
-      // 2. Draw Background
-      const grad = ctx.createLinearGradient(0, 0, 0, CANVAS_BASE_HEIGHT);
-      grad.addColorStop(0, "#991b1b");
-      grad.addColorStop(1, "#450a0a");
-      ctx.fillStyle = grad;
+      // Deep Cyber Arcade Background
+      ctx.fillStyle = "#070519";
       ctx.fillRect(0, 0, CANVAS_BASE_WIDTH, CANVAS_BASE_HEIGHT);
 
-      // 3. Draw Character (Cái chổi 🧹)
-      // Save/Restore context để đảm bảo shadow/font không bị leak sang object khác
+      // Matrix Cyber Grid lines
+      ctx.strokeStyle = "rgba(99, 102, 241, 0.08)";
+      ctx.lineWidth = 1;
+      for (let i = 0; i < CANVAS_BASE_WIDTH; i += 50) {
+        ctx.beginPath();
+        ctx.moveTo(i, 0);
+        ctx.lineTo(i, CANVAS_BASE_HEIGHT);
+        ctx.stroke();
+      }
+      for (let i = 0; i < CANVAS_BASE_HEIGHT; i += 50) {
+        ctx.beginPath();
+        ctx.moveTo(0, i);
+        ctx.lineTo(CANVAS_BASE_WIDTH, i);
+        ctx.stroke();
+      }
+
+      // Draw Player Character with Glowing Neon Trail Ring
       ctx.save();
-      ctx.shadowBlur = 15;
-      ctx.shadowColor = "rgba(254, 240, 138, 0.4)";
-      ctx.font = "45px Arial";
-      ctx.fillText("🧹", 50, playerY.current + 40);
+      const characterY = playerY.current + 20; // center point
+      
+      // Outer glow circle
+      const gradient = ctx.createRadialGradient(85, characterY + 20, 5, 85, characterY + 20, 35);
+      gradient.addColorStop(0, "rgba(99, 102, 241, 0.4)");
+      gradient.addColorStop(1, "rgba(99, 102, 241, 0)");
+      ctx.fillStyle = gradient;
+      ctx.beginPath();
+      ctx.arc(85, characterY + 20, 35, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Draw Character Emoji
+      ctx.font = "45px Outfit, sans-serif";
+      ctx.fillText("🧹", 60, playerY.current + 45);
       ctx.restore();
 
-      // 4. Draw Obstacles (Câu hỏi)
+      // Draw Cyber Neon Obstacles
       obstacles.current.forEach((obs) => {
         ctx.save();
         
-        // Vẽ Box
-        ctx.fillStyle = "#fef08a";
-        ctx.strokeStyle = "#eab308";
+        // Translucent background
+        ctx.fillStyle = "rgba(244, 63, 94, 0.12)";
+        // Glowing outline border
+        ctx.strokeStyle = "#f43f5e";
         ctx.lineWidth = 3;
+        
+        // Shadow glow
+        ctx.shadowColor = "#f43f5e";
+        ctx.shadowBlur = 10;
+
         ctx.beginPath();
         if (ctx.roundRect) {
-            ctx.roundRect(obs.x, obs.y, obs.width, 45, 12);
+          ctx.roundRect(obs.x, obs.y, obs.width, 45, 12);
         } else {
-            ctx.rect(obs.x, obs.y, obs.width, 45);
+          ctx.rect(obs.x, obs.y, obs.width, 45);
         }
         ctx.fill();
+        ctx.shadowBlur = 0; // reset shadow for stroke to avoid heavy blur
         ctx.stroke();
 
-        // Vẽ Text
-        ctx.fillStyle = "#1e1b4b";
-        ctx.font = "bold 16px Arial"; // Font khớp với lúc đo (measureText) trong hook
-        ctx.fillText(obs.text, obs.x + 15, obs.y + 28);
+        // Obstacle text
+        ctx.fillStyle = "#ffffff";
+        ctx.shadowColor = "#f43f5e";
+        ctx.shadowBlur = 4;
+        ctx.font = "bold 15px Outfit, sans-serif";
+        ctx.textAlign = "center";
+        ctx.fillText(obs.text, obs.x + obs.width / 2, obs.y + 28);
         
         ctx.restore();
       });
 
-      if (state === "PLAYING") {
+      if (state === TetRunnerState.PLAYING) {
         animId = requestAnimationFrame(render);
       }
     };
 
-    if (state === "PLAYING") {
+    if (state === TetRunnerState.PLAYING) {
       animId = requestAnimationFrame(render);
     } else {
-      // Vẽ frame tĩnh để tránh màn hình đen khi pause/idle
-      ctx.fillStyle = "#7f1d1d";
+      ctx.fillStyle = "#070519";
       ctx.fillRect(0, 0, CANVAS_BASE_WIDTH, CANVAS_BASE_HEIGHT);
     }
 
     return () => cancelAnimationFrame(animId);
-  }, [state, update, playerY, obstacles]); // Dependencies chuẩn
+  }, [state, update, playerY, obstacles]);
 
-  // Hàm xử lý tương tác chung cho Mouse/Touch
   const handleInteraction = (e: React.SyntheticEvent) => {
-    // Ngăn chặn sự kiện lan truyền hoặc mặc định (zoom/scroll)
-    // e.preventDefault(); // Chỉ bật nếu cần thiết để tránh warning passive listener
     jump();
   };
 
   return (
     <div
-      className="min-h-screen bg-slate-950 flex flex-col items-center justify-center p-2 md:p-4 touch-none select-none overflow-hidden"
+      className="min-h-screen bg-[#030014] flex flex-col items-center justify-center p-4 touch-none select-none overflow-hidden relative"
       onMouseDown={handleInteraction}
       onTouchStart={handleInteraction}
     >
-      <div className="relative w-full max-w-4xl aspect-[16/10] bg-black rounded-3xl overflow-hidden border-4 border-yellow-600 shadow-2xl">
-        <canvas
-          ref={canvasRef}
-          width={CANVAS_BASE_WIDTH}
-          height={CANVAS_BASE_HEIGHT}
-          className="w-full h-full object-contain block"
-        />
+      {/* Background Glow */}
+      <div className="absolute top-1/4 left-1/4 w-96 h-96 rounded-full bg-indigo-600/10 blur-[150px] pointer-events-none z-0"></div>
 
-        {/* --- UI OVERLAYS --- */}
-        
-        {/* IDLE SCREEN */}
-        {state === "IDLE" && (
-          <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/60 backdrop-blur-md p-6 text-center z-20">
-            <div className="text-8xl mb-6 animate-bounce">🧹</div>
-            <h1 className="text-4xl md:text-6xl font-black text-yellow-400 mb-4 drop-shadow-lg uppercase">
-              {t("tetRunner.title")}
-            </h1>
-            <p className="text-white/70 mb-8 max-w-md italic">
-              {t("home.tetRunnerDesc")}
-            </p>
-            
-            <div className="flex gap-4">
-                <button
-                onClick={(e) => {
-                    e.stopPropagation();
-                    startCountdown();
-                }}
-                className="px-10 py-4 bg-yellow-500 hover:bg-yellow-400 text-red-950 rounded-full font-black text-2xl transition-transform hover:scale-105 shadow-xl active:scale-95"
-                >
-                {t("tetRunner.btnPlay")}
-                </button>
-                
-                {/* Nút Back về Home */}
-                <button
-                    onClick={(e) => { e.stopPropagation(); onBack(); }}
-                    className="px-6 py-4 bg-white/10 hover:bg-white/20 text-white rounded-full transition-colors border border-white/20"
-                >
-                    <Home size={32}/>
-                </button>
+      {/* Main Game Interface Container */}
+      <div className="relative z-10 w-full max-w-4xl">
+        <div className="relative w-full aspect-[16/10] bg-slate-950/45 border border-slate-900 shadow-glass rounded-3xl overflow-hidden backdrop-blur-xl">
+          <canvas
+            ref={canvasRef}
+            width={CANVAS_BASE_WIDTH}
+            height={CANVAS_BASE_HEIGHT}
+            className="w-full h-full object-contain block"
+          />
+
+          {/* Floating Back Button during Active Play */}
+          {state === TetRunnerState.PLAYING && (
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={(e) => {
+                e.stopPropagation();
+                onBack();
+              }}
+              className="absolute top-4 right-4 z-20 w-10 h-10 rounded-xl bg-slate-900/60 border border-white/10 flex items-center justify-center text-slate-300 hover:text-white transition-all cursor-pointer shadow-sm"
+              onMouseDown={(e) => e.stopPropagation()}
+              onTouchStart={(e) => e.stopPropagation()}
+            >
+              <Home size={18} />
+            </motion.button>
+          )}
+
+          {/* Phase Overlays */}
+          {state === TetRunnerState.IDLE && (
+            <IdleOverlay onStart={startCountdown} onBack={onBack} />
+          )}
+
+          {state === TetRunnerState.COUNTDOWN && (
+            <CountdownOverlay countdown={countdown} />
+          )}
+
+          {state === TetRunnerState.GAMEOVER && (
+            <GameOverOverlay score={score} onRetry={startCountdown} onBack={onBack} />
+          )}
+
+          {/* Real-time score indicator */}
+          {state === TetRunnerState.PLAYING && (
+            <div className="absolute top-6 left-6 text-5xl font-black text-white bg-slate-900/60 border border-white/10 px-6 py-2 rounded-2xl select-none text-glow-blue backdrop-blur-md">
+              {score}
             </div>
-          </div>
-        )}
-
-        {/* COUNTDOWN */}
-        {state === "COUNTDOWN" && (
-          <div className="absolute inset-0 flex items-center justify-center bg-black/20 backdrop-blur-sm z-30 pointer-events-none">
-            <span className="text-[150px] font-black text-yellow-400 animate-ping">
-              {countdown}
-            </span>
-          </div>
-        )}
-
-        {/* GAMEOVER SCREEN */}
-        {state === "GAMEOVER" && (
-          <div className="absolute inset-0 flex flex-col items-center justify-center bg-red-950/95 backdrop-blur-xl p-6 animate-fade-in text-white z-40">
-            <div className="text-7xl mb-4 animate-pulse">😵‍💫</div>
-            <h2 className="text-3xl md:text-5xl font-black mb-2 text-yellow-400 text-center">
-              {t("tetRunner.gameOverTitle")}
-            </h2>
-            <p className="text-yellow-100/70 mb-8 text-center italic text-lg max-w-sm">
-              "{t("tetRunner.gameOverSub")}"
-            </p>
-            
-            <div className="bg-black/40 px-10 py-4 rounded-2xl mb-8 border border-white/10">
-              <span className="text-5xl font-black text-yellow-300">{score}</span>
-            </div>
-            
-            <div className="flex gap-4" onMouseDown={(e) => e.stopPropagation()} onTouchStart={(e) => e.stopPropagation()}>
-              <button
-                onClick={(e) => { e.stopPropagation(); startCountdown(); }}
-                className="p-4 bg-green-600 hover:bg-green-500 rounded-2xl transition-all shadow-lg hover:scale-105"
-                title={t("common.retry")}
-              >
-                <RotateCcw size={32} color="white" />
-              </button>
-              <button
-                onClick={(e) => { e.stopPropagation(); onBack(); }}
-                className="p-4 bg-white/10 hover:bg-white/20 rounded-2xl transition-all border border-white/10 shadow-lg"
-                title={t("common.back")}
-              >
-                <Home size={32} />
-              </button>
-              <button className="flex items-center gap-2 px-6 bg-yellow-500 text-red-950 rounded-2xl font-black hover:bg-yellow-400 transition-all shadow-xl">
-                <Share2 size={24} /> <span className="hidden sm:inline">{t("tetRunner.shareText")}</span>
-              </button>
-            </div>
-          </div>
-        )}
-
-        {/* SCORE HUD */}
-        {state === "PLAYING" && (
-          <div className="absolute top-6 left-10 text-6xl font-black text-white/20 italic pointer-events-none select-none z-10">
-            {score}
-          </div>
-        )}
+          )}
+        </div>
       </div>
 
-      <p className="mt-6 text-white/30 text-xs font-bold uppercase tracking-[0.2em] animate-pulse">
-        {t("tetRunner.hint")}
-      </p>
+      {/* Hints panel */}
+      <div className="mt-8 px-6 py-2.5 rounded-full bg-slate-900/40 border border-slate-800/80 backdrop-blur-md text-center max-w-xs relative z-10 shadow-sm">
+        <p className="text-slate-400 text-xs font-semibold uppercase tracking-widest">
+          {t("tetRunner.hint")}
+        </p>
+      </div>
     </div>
   );
 };

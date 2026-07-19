@@ -1,26 +1,26 @@
 import { useState, useRef, useCallback } from 'react';
 import { playClickSound, playExplosionSound } from '../../../utils/soundUtils';
 import { GRAVITY, JUMP_FORCE, SPEED, CANVAS_BASE_WIDTH, CANVAS_BASE_HEIGHT } from '../utils/constants';
+import { TetRunnerState, Obstacle } from '../types';
 
-// Nhận questions từ component truyền vào
 export const useTetRunner = (questions: string[]) => {
-  const [state, setState] = useState<'IDLE' | 'COUNTDOWN' | 'PLAYING' | 'GAMEOVER'>('IDLE');
+  const [state, setState] = useState<TetRunnerState>(TetRunnerState.IDLE);
   const [score, setScore] = useState(0);
   const [countdown, setCountdown] = useState(3);
   
   const playerY = useRef(200);
   const velocity = useRef(0);
-  const obstacles = useRef<any[]>([]);
+  const obstacles = useRef<Obstacle[]>([]);
   const frameId = useRef(0);
 
   const startCountdown = useCallback(() => {
-    setState('COUNTDOWN');
+    setState(TetRunnerState.COUNTDOWN);
     setCountdown(3);
     const timer = setInterval(() => {
       setCountdown(p => {
         if (p <= 1) {
           clearInterval(timer);
-          setState('PLAYING');
+          setState(TetRunnerState.PLAYING);
           playerY.current = 200;
           velocity.current = 0;
           obstacles.current = [];
@@ -33,35 +33,33 @@ export const useTetRunner = (questions: string[]) => {
   }, []);
 
   const jump = useCallback(() => {
-    if (state === 'PLAYING') {
+    if (state === TetRunnerState.PLAYING) {
       velocity.current = JUMP_FORCE;
       playClickSound();
     }
   }, [state]);
 
   const update = (ctx: CanvasRenderingContext2D) => {
-    if (state !== 'PLAYING') return;
+    if (state !== TetRunnerState.PLAYING) return;
 
     velocity.current += GRAVITY;
     playerY.current += velocity.current;
 
     // Chạm sàn/trần
     if (playerY.current > CANVAS_BASE_HEIGHT - 60 || playerY.current < -40) {
-      setState('GAMEOVER');
+      setState(TetRunnerState.GAMEOVER);
       playExplosionSound();
       return;
     }
 
     // Sinh chướng ngại vật
-    if (frameId.current % 110 === 0) { // Tăng khoảng cách 1 chút
-      // Fallback nếu mảng rỗng
+    if (frameId.current % 110 === 0) {
       const text = questions.length > 0 
         ? questions[Math.floor(Math.random() * questions.length)]
         : "???";
       
-      // FIX CRITICAL BUG: Phải set font TRƯỚC khi đo độ rộng
       ctx.save();
-      ctx.font = "bold 16px Arial"; 
+      ctx.font = "bold 16px Outfit, sans-serif"; 
       const textWidth = ctx.measureText(text).width;
       ctx.restore();
 
@@ -81,7 +79,7 @@ export const useTetRunner = (questions: string[]) => {
       const px = 60, py = playerY.current + 10, pw = 30, ph = 30;
       // Hitbox logic
       if (px < obs.x + obs.width - 5 && px + pw > obs.x + 5 && py < obs.y + 35 && py + ph > obs.y + 5) {
-        setState('GAMEOVER');
+        setState(TetRunnerState.GAMEOVER);
         playExplosionSound();
       }
 

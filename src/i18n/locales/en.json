@@ -7,6 +7,8 @@
   "home": {
     "title": "Game Hub",
     "subtitle": "Choose your favorite game!",
+    "ambientFocus": "Relax Station",
+    "ambientFocusDesc": "Focus, relax and chill.",
     "minesweeper": "Minesweeper",
     "minesweeperDesc": "Classic puzzle challenge.",
     "christmas": "Christmas Match",

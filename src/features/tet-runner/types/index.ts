@@ -1,16 +1,14 @@
-export interface GameState {
-  isGameOver: boolean;
-  score: number;
-  highScore: number;
-  isPlaying: boolean;
+export enum TetRunnerState {
+  IDLE = 'IDLE',
+  COUNTDOWN = 'COUNTDOWN',
+  PLAYING = 'PLAYING',
+  GAMEOVER = 'GAMEOVER',
 }
 
 export interface Obstacle {
-  id: number;
   x: number;
   y: number;
   width: number;
-  height: number;
   text: string;
-  type: 'dish' | 'question';
+  passed: boolean;
 }

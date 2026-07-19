@@ -1,7 +1,21 @@
-export type Difficulty = 'easy' | 'medium' | 'hard' | 'expert';
-export type CellState = 'hidden' | 'revealed' | 'flagged';
-export type GameStatus = 'playing' | 'won' | 'lost';
+export enum Difficulty {
+  EASY = 'easy',
+  MEDIUM = 'medium',
+  HARD = 'hard',
+  EXPERT = 'expert',
+}
 
+export enum CellState {
+  HIDDEN = 'hidden',
+  REVEALED = 'revealed',
+  FLAGGED = 'flagged',
+}
+
+export enum GameStatus {
+  PLAYING = 'playing',
+  WON = 'won',
+  LOST = 'lost',
+}
 export interface Cell {
   isMine: boolean;
   neighborMines: number;

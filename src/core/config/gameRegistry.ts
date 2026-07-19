@@ -1,7 +1,8 @@
 import React, { lazy } from "react";
+import { AppRoute } from "../../types/common.types";
 
 export interface GameMetadata {
-  id: string;
+  id: AppRoute;
   titleKey: string;
   descriptionKey: string;
   icon: string;
@@ -11,7 +12,15 @@ export interface GameMetadata {
 
 export const GAME_REGISTRY: GameMetadata[] = [
   {
-    id: "minesweeper",
+    id: AppRoute.AMBIENT_FOCUS,
+    titleKey: "home.ambientFocus",
+    descriptionKey: "home.ambientFocusDesc",
+    icon: "🧘",
+    thumbnailColor: "from-blue-400 to-indigo-600",
+    component: lazy(() => import("../../features/ambient-focus/AmbientFocus")),
+  },
+  {
+    id: AppRoute.MINESWEEPER,
     titleKey: "home.minesweeper",
     descriptionKey: "home.minesweeperDesc",
     icon: "💣",
@@ -19,7 +28,7 @@ export const GAME_REGISTRY: GameMetadata[] = [
     component: lazy(() => import("../../features/minesweeper/Minesweeper")),
   },
   {
-    id: "christmas",
+    id: AppRoute.CHRISTMAS,
     titleKey: "home.christmas",
     descriptionKey: "home.christmasDesc",
     icon: "🎄",
@@ -27,7 +36,7 @@ export const GAME_REGISTRY: GameMetadata[] = [
     component: lazy(() => import("../../features/christmas/ChristmasMatch")),
   },
   {
-    id: "tet-runner",
+    id: AppRoute.TET_RUNNER,
     titleKey: "home.tetRunner",
     descriptionKey: "home.tetRunnerDesc",
     icon: "🧹",

@@ -1,4 +1,5 @@
 import React from 'react';
+import { motion } from 'framer-motion';
 
 interface NameListProps {
   names: string[];
@@ -10,54 +11,54 @@ export const NameList: React.FC<NameListProps> = ({ names }) => {
   const rightNames = names.slice(midPoint);
 
   return (
-    <div className="flex flex-col lg:flex-row items-center justify-center gap-4 lg:gap-8 mb-8 lg:mb-12 px-2">
+    <div className="flex flex-col md:flex-row items-stretch justify-center gap-6 md:gap-12 mb-8 lg:mb-12 px-2 max-w-4xl mx-auto">
       {/* Left Column */}
-      <div className="flex-1 w-full max-w-xs">
+      <div className="flex-1 w-full max-w-xs mx-auto">
         <div className="relative">
-          <div className="absolute -left-2 lg:-left-4 top-0 bottom-0 w-1 lg:w-2 bg-gradient-to-b from-red-500 via-red-400 to-red-500 rounded-full animate-pulse" />
-          <div className="space-y-2 lg:space-y-4">
+          <div className="absolute -left-2 top-0 bottom-0 w-1 bg-gradient-to-b from-red-500/80 to-rose-500/20 rounded-full" />
+          <div className="space-y-3 pl-4">
             {leftNames.map((name, idx) => (
-              <div
+              <motion.div
                 key={idx}
-                className="bg-gradient-to-r from-red-600 to-red-700 text-white px-3 py-2 lg:px-6 lg:py-3 rounded-lg shadow-lg transform hover:scale-105 transition-all duration-300 animate-slide-in-left border-2 border-red-400"
-                style={{ animationDelay: `${idx * 0.1}s` }}
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: idx * 0.08, type: "spring", stiffness: 100 }}
+                className="bg-slate-900/60 border border-red-500/20 hover:border-red-500/40 text-slate-100 px-4 py-3 rounded-2xl shadow-sm transition-all duration-300 flex items-center justify-between text-base"
               >
-                <div className="flex items-center justify-between text-sm lg:text-lg">
-                  <span className="font-semibold">{name}</span>
-                  <span className="text-xl lg:text-2xl">🎅</span>
-                </div>
-              </div>
+                <span className="font-semibold">{name}</span>
+                <span className="text-xl">🎅</span>
+              </motion.div>
             ))}
           </div>
         </div>
       </div>
 
-      {/* Center Tree */}
-      <div className="flex flex-col items-center justify-center px-4 lg:px-8">
-        <div className="text-5xl lg:text-9xl animate-swing mb-2 lg:mb-4">🎄</div>
-        <div className="flex gap-2 lg:gap-4 animate-bounce-slow">
-          <span className="text-2xl lg:text-4xl">🔔</span>
-          <span className="text-2xl lg:text-4xl">🎁</span>
-          <span className="text-2xl lg:text-4xl">⭐</span>
+      {/* Center Dynamic Graphic */}
+      <div className="flex flex-col items-center justify-center py-6 md:py-0 select-none">
+        <div className="text-6xl md:text-7xl animate-float mb-3">🎄</div>
+        <div className="flex gap-3 text-xl bg-white/5 border border-white/5 backdrop-blur-md px-4 py-2 rounded-full shadow-inner">
+          <span className="animate-pulse">🔔</span>
+          <span className="animate-pulse" style={{ animationDelay: "0.2s" }}>🎁</span>
+          <span className="animate-pulse" style={{ animationDelay: "0.4s" }}>⭐</span>
         </div>
       </div>
 
       {/* Right Column */}
-      <div className="flex-1 w-full max-w-xs">
+      <div className="flex-1 w-full max-w-xs mx-auto">
         <div className="relative">
-          <div className="absolute -right-2 lg:-right-4 top-0 bottom-0 w-1 lg:w-2 bg-gradient-to-b from-green-500 via-green-400 to-green-500 rounded-full animate-pulse" />
-          <div className="space-y-2 lg:space-y-4">
+          <div className="absolute -right-2 top-0 bottom-0 w-1 bg-gradient-to-b from-emerald-500/80 to-teal-500/20 rounded-full" />
+          <div className="space-y-3 pr-4">
             {rightNames.map((name, idx) => (
-              <div
+              <motion.div
                 key={idx}
-                className="bg-gradient-to-l from-green-600 to-green-700 text-white px-3 py-2 lg:px-6 lg:py-3 rounded-lg shadow-lg transform hover:scale-105 transition-all duration-300 animate-slide-in-right border-2 border-green-400"
-                style={{ animationDelay: `${idx * 0.1}s` }}
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: idx * 0.08, type: "spring", stiffness: 100 }}
+                className="bg-slate-900/60 border border-emerald-500/20 hover:border-emerald-500/40 text-slate-100 px-4 py-3 rounded-2xl shadow-sm transition-all duration-300 flex items-center justify-between text-base"
               >
-                <div className="flex items-center justify-between text-sm lg:text-lg">
-                  <span className="text-xl lg:text-2xl">🎀</span>
-                  <span className="font-semibold">{name}</span>
-                </div>
-              </div>
+                <span className="text-xl">🎀</span>
+                <span className="font-semibold">{name}</span>
+              </motion.div>
             ))}
           </div>
         </div>
@@ -65,3 +66,4 @@ export const NameList: React.FC<NameListProps> = ({ names }) => {
     </div>
   );
 };
+export default NameList;

@@ -1,10 +1,13 @@
 import React from "react";
-import { Home, Users, Sparkles } from "lucide-react";
+import { Home } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { motion } from "framer-motion";
 import { useChristmasMatching } from "./hooks/useChristmasMatching";
 import { PairResult } from "./components/PairResult";
 import { parseNames } from "./utils";
 import { NameList } from "./components/NameList";
+import { InputForm } from "./components/InputForm";
+import { SnowflakeEffect } from "./components/SnowflakeEffect";
 
 interface ChristmasMatchProps {
   onBack: () => void;
@@ -17,7 +20,6 @@ const ChristmasMatch: React.FC<ChristmasMatchProps> = ({ onBack }) => {
     setInputNames,
     pairs,
     isMatching,
-    showFireworks,
     snowflakes,
     showInput,
     handleMatch,
@@ -25,78 +27,72 @@ const ChristmasMatch: React.FC<ChristmasMatchProps> = ({ onBack }) => {
   } = useChristmasMatching("An;Bình;Chi;Dũng;Hoa;Khoa");
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-red-900 to-green-900 relative overflow-hidden p-4">
-      {/* Snowflakes Effect */}
-      {snowflakes.map((id) => (
-        <div
-          key={id}
-          className="absolute text-white animate-fall pointer-events-none opacity-50"
-        >
-          ❄
-        </div>
-      ))}
+    <div className="min-h-screen bg-[#030014] relative overflow-hidden p-4 md:p-8">
+      {/* Aurora Ambient Background Effect */}
+      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[500px] h-[500px] rounded-full bg-red-600/5 blur-[150px] pointer-events-none z-0"></div>
+      
+      <SnowflakeEffect snowflakes={snowflakes} />
 
-      <div className="relative z-10 container mx-auto">
-        <div className="flex justify-between items-center mb-8">
-          <button
+      <div className="relative z-10 container mx-auto max-w-5xl">
+        
+        {/* Navigation & Header */}
+        <div className="flex flex-col md:flex-row justify-between items-center mb-10 gap-4">
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
             onClick={onBack}
-            className="p-3 bg-white/20 rounded-xl text-white hover:bg-white/30 transition-all"
+            className="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-slate-300 hover:text-white hover:bg-white/10 hover:border-white/20 transition-all cursor-pointer shadow-sm self-start md:self-auto"
           >
-            <Home />
-          </button>
-          <h1 className="text-4xl md:text-6xl font-bold text-white text-center drop-shadow-lg">
-            {t("christmas.title")}
-          </h1>
-          <div className="w-10"></div>
+            <Home size={22} />
+          </motion.button>
+          
+          <motion.div 
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="bg-red-500/10 border border-red-500/30 px-6 py-2.5 rounded-2xl shadow-neon-pink"
+          >
+            <h1 className="text-xl md:text-2xl font-black text-white tracking-wider uppercase text-glow-pink">
+              {t("christmas.title")}
+            </h1>
+          </motion.div>
+          
+          <div className="w-12 hidden md:block"></div>
         </div>
 
+        {/* Input Phase */}
         {showInput && (
-          <div className="max-w-4xl mx-auto bg-white/10 backdrop-blur-md p-6 md:p-8 rounded-2xl border-4 border-white/30 mb-8 animate-fade-in">
-            <div className="flex items-center gap-3 mb-4 justify-center text-white">
-              <Users size={32} />
-              <h2 className="text-2xl font-bold">
-                {t("christmas.inputLabel")}
-              </h2>
-            </div>
-            <textarea
-              value={inputNames}
-              onChange={(e) => setInputNames(e.target.value)}
-              className="w-full p-4 rounded-xl border-4 border-yellow-300 text-lg outline-none focus:ring-4 focus:ring-yellow-300/50"
-              rows={4}
-            />
-            <button
-              onClick={handleMatch}
-              disabled={isMatching}
-              className="w-full mt-6 bg-yellow-400 hover:bg-yellow-500 py-4 rounded-full text-2xl font-bold border-4 border-white shadow-xl transition-all active:scale-95"
-            >
-              {isMatching
-                ? t("christmas.btnMatching")
-                : t("christmas.btnMatch")}
-            </button>
-          </div>
+          <InputForm
+            inputNames={inputNames}
+            setInputNames={setInputNames}
+            isMatching={isMatching}
+            onMatch={handleMatch}
+          />
         )}
 
+        {/* Results Phase */}
         {!showInput && pairs.length > 0 && <PairResult pairs={pairs} />}
 
+        {/* Action button when results exist */}
         {!showInput && (
-          <div className="text-center mt-8">
-            <button
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="text-center mt-8 mb-6"
+          >
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
               onClick={handleReset}
-              className="bg-white/20 hover:bg-white/30 text-white px-10 py-4 rounded-full font-bold border-2 border-white/50 transition-all"
+              className="px-10 py-3 rounded-2xl bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white font-bold text-lg shadow-[0_0_15px_rgba(220,38,38,0.3)] hover:shadow-[0_0_25px_rgba(220,38,38,0.5)] transition-all cursor-pointer uppercase"
             >
               {t("christmas.btnReset")}
-            </button>
-          </div>
+            </motion.button>
+          </motion.div>
         )}
 
+        {/* Name preview list */}
         {showInput && <NameList names={parseNames(inputNames)} />}
       </div>
-
-      {showFireworks && (
-        <div className="fixed inset-0 flex items-center justify-center pointer-events-none z-50">
-          <Sparkles className="text-yellow-300 animate-firework" size={200} />
-        </div>
-      )}
     </div>
   );
 };

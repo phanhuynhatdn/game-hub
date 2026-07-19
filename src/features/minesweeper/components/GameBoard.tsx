@@ -20,7 +20,7 @@ export const GameBoard: React.FC<GameBoardProps> = ({
   const containerRef = useRef<HTMLDivElement>(null);
   const [containerWidth, setContainerWidth] = useState(0);
 
-  // 1. Hook theo dõi kích thước thật của container cha
+  // Track parent width for responsiveness
   useEffect(() => {
     if (!containerRef.current) return;
 
@@ -34,17 +34,11 @@ export const GameBoard: React.FC<GameBoardProps> = ({
     return () => observer.disconnect();
   }, []);
 
-  // 2. Tính toán Cell Size "Thông minh"
+  // Compute responsive cell size
   const cellSize = useMemo(() => {
     if (containerWidth === 0) return 30; // Default fallback
 
-    // Logic: Lấy chiều rộng container chia cho số cột
-    const rawSize = (containerWidth - 32) / config.cols; // Trừ padding 32px (p-4)
-
-    // Ràng buộc kích thước:
-    // - Mobile: Tối thiểu 32px để dễ bấm (Touch target)
-    // - Desktop: Tối đa 45px để không quá to thô
-    // - Desktop Hard Mode: Có thể nhỏ xuống 20px để vừa màn hình
+    const rawSize = (containerWidth - 32) / config.cols;
 
     const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
     const minSize = isMobile ? 30 : 22;
@@ -56,20 +50,18 @@ export const GameBoard: React.FC<GameBoardProps> = ({
   return (
     <div
       ref={containerRef}
-      className="w-full max-w-7xl flex flex-col items-center justify-start overflow-hidden px-2"
+      className="w-full max-w-5xl flex flex-col items-center justify-start overflow-hidden px-2 mx-auto"
     >
-      {/* Container Kính mờ siêu đẹp */}
+      {/* High-fidelity glass terminal grid panel */}
       <div
-        className="relative bg-white/10 backdrop-blur-xl p-4 rounded-3xl shadow-[0_8px_32px_rgba(0,0,0,0.2)] border border-white/20 overflow-y-auto overflow-x-hidden custom-scrollbar"
+        className="relative bg-slate-900/30 backdrop-blur-xl p-4 rounded-3xl border border-slate-800/80 shadow-glass overflow-y-auto overflow-x-hidden scrollbar-hide"
         style={{ maxHeight: "75vh" }}
       >
         <div
-          className="flex flex-wrap justify-center content-start" // Dùng flex wrap hoặc grid đều được, nhưng grid chuẩn hơn
           style={{
             display: "grid",
             gridTemplateColumns: `repeat(${config.cols}, ${cellSize}px)`,
             width: "fit-content",
-            // Bỏ gap ở grid cha vì ta đã margin ở Cell con để tạo rãnh đẹp hơn
           }}
         >
           {board.map((row, rowIdx) =>
@@ -89,12 +81,13 @@ export const GameBoard: React.FC<GameBoardProps> = ({
         </div>
       </div>
 
-      {/* Hint UI Cute */}
-      <div className="mt-4 flex items-center gap-2 text-white/60 text-sm font-medium px-4 py-2 bg-black/20 rounded-full backdrop-blur-md">
+      {/* Modern Status Hint */}
+      <div className="mt-4 flex items-center gap-2 text-slate-400 text-xs font-semibold uppercase tracking-wider px-4 py-2 bg-slate-900/50 rounded-full border border-slate-800/50 backdrop-blur-md">
         {config.rows > 20
-          ? "👆 Vuốt dọc để tìm kho báu nha"
-          : "✨ Chúc bạn may mắn!"}
+          ? "👆 Scroll vertically to navigate grid"
+          : "✨ Avoid the mines to win!"}
       </div>
     </div>
   );
 };
+export default GameBoard;

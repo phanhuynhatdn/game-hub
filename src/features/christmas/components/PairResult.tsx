@@ -1,6 +1,7 @@
 import React from "react";
 import { Gift } from "lucide-react";
-import { useTranslation } from "react-i18next"; // Thêm i18n
+import { useTranslation } from "react-i18next";
+import { motion } from "framer-motion";
 import { Pair } from "../types";
 
 interface PairResultProps {
@@ -11,47 +12,57 @@ export const PairResult: React.FC<PairResultProps> = ({ pairs }) => {
   const { t } = useTranslation();
 
   return (
-    <div className="max-w-3xl mx-auto mb-6 sm:mb-12 animate-fade-in">
-      {/* Tiêu đề kết quả đã i18n */}
-      <h2 className="text-2xl sm:text-3xl font-bold text-center text-white mb-4 sm:mb-8 flex items-center justify-center gap-2 sm:gap-3">
-        <Gift className="animate-bounce text-yellow-300" />
-        {t("christmas.resultTitle")}
+    <div className="max-w-xl mx-auto mb-10">
+      {/* Result Header Panel */}
+      <motion.div 
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="flex items-center justify-center gap-3 mb-10 py-3 px-6 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 shadow-neon-blue max-w-sm mx-auto select-none"
+      >
+        <Gift className="text-indigo-400 animate-bounce" size={24} />
+        <h2 className="text-lg md:text-xl font-extrabold text-white tracking-tight uppercase text-glow-blue">
+          {t("christmas.resultTitle")}
+        </h2>
         <Gift
-          className="animate-bounce text-yellow-300"
+          className="text-indigo-400 animate-bounce"
+          size={24}
           style={{ animationDelay: "0.2s" }}
         />
-      </h2>
+      </motion.div>
 
-      <div className="space-y-3 sm:space-y-4">
+      {/* Matched Pairs List */}
+      <div className="space-y-4">
         {pairs.map((pair, idx) => (
-          <div
+          <motion.div
             key={`pair-${idx}`}
-            className="bg-gradient-to-r from-purple-600 via-pink-600 to-red-600 text-white px-4 py-3 sm:px-8 sm:py-5 rounded-2xl shadow-2xl transform hover:scale-[1.02] transition-all duration-300 border-4 border-yellow-300/50"
-            style={{ animationDelay: `${idx * 0.15}s` }}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: idx * 0.12, type: "spring", stiffness: 90 }}
+            whileHover={{ y: -3, scale: 1.01 }}
+            className="p-5 rounded-2xl bg-slate-900/60 border border-slate-800 hover:border-indigo-500/30 transition-all duration-300 shadow-sm flex flex-col sm:flex-row items-center justify-center gap-4"
           >
-            {/* Sử dụng Flex-wrap để hỗ trợ tốt cả nhóm 2 và nhóm 3 người */}
-            <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-6 text-base sm:text-xl font-bold">
+            <div className="flex items-center justify-center gap-4 w-full">
               {pair.names.map((name, i) => (
                 <React.Fragment key={`${name}-${i}`}>
-                  <div className="flex items-center gap-2 bg-white/10 px-3 py-1 rounded-full backdrop-blur-sm">
-                    <span className="text-xl sm:text-2xl">
+                  <div className="flex items-center gap-2 px-4 py-2 bg-white/5 border border-white/10 rounded-xl min-w-[100px] justify-center shadow-inner hover:bg-white/10 transition-colors duration-200">
+                    <span className="text-lg">
                       {i % 2 === 0 ? "🎅" : "🎀"}
                     </span>
-                    <span className="tracking-wide">{name}</span>
+                    <span className="font-extrabold text-sm tracking-wider text-slate-100 uppercase">{name}</span>
                   </div>
 
-                  {/* Hiển thị trái tim giữa các thành viên */}
                   {i < pair.names.length - 1 && (
-                    <span className="text-2xl sm:text-3xl animate-pulse text-red-300 drop-shadow-md">
+                    <span className="text-xl animate-pulse">
                       💝
                     </span>
                   )}
                 </React.Fragment>
               ))}
             </div>
-          </div>
+          </motion.div>
         ))}
       </div>
     </div>
   );
 };
+export default PairResult;
