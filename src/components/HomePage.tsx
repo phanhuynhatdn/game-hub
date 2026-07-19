@@ -8,7 +8,7 @@ import { useGameConfigStore } from '../core/store/useGameConfigStore';
 import { useAuthStore } from '../core/store/useAuthStore';
 import { LeaderboardModal } from '../features/leaderboard/LeaderboardModal';
 import { ChatDrawer } from '../features/chat/ChatDrawer';
-import { BaseModal, BaseButton, AdSlot } from './shared';
+import { BaseModal, BaseButton } from './shared';
 import { GOOGLE_AUTH_URL } from '../core/constants/api.constants';
 import type { AppRoute } from '../types/common.types';
 
@@ -44,11 +44,6 @@ export const HomePage: React.FC<HomePageProps> = ({ onSelectGame }) => {
       <InteractiveBackdrop />
 
       <div className="relative z-10 text-center max-w-6xl w-full py-12 md:py-20 flex flex-col items-center">
-        {/* Top Ad Slot Banner */}
-        <div className="mb-12 w-full flex justify-center">
-          <AdSlot label="Top Banner Ad - 728x90" className="hidden md:flex w-[728px] h-[90px]" />
-        </div>
-
         {/* Title Block */}
         <motion.div
           initial={{ y: -40, opacity: 0 }}
@@ -70,39 +65,6 @@ export const HomePage: React.FC<HomePageProps> = ({ onSelectGame }) => {
           </p>
         </motion.div>
 
-        {/* Floating Utility Buttons (Leaderboard & Chat) */}
-        <div className="flex justify-center gap-6 mb-16 relative z-30">
-          {isGameActive('global-chat') ? (
-            <motion.button
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.9 }}
-              onClick={handleOpenChat}
-              className="bg-indigo-600 hover:bg-indigo-500 p-4 rounded-full text-white shadow-[0_0_20px_rgba(79,70,229,0.4)] border border-indigo-400/20 cursor-pointer flex items-center justify-center transition-colors"
-              title="Global Chat Room"
-            >
-              <MessageSquare className="w-6 h-6" />
-            </motion.button>
-          ) : (
-            <button
-              disabled
-              className="bg-slate-800/40 p-4 rounded-full text-slate-600 border border-slate-700/20 opacity-50 cursor-not-allowed flex items-center justify-center"
-              title="Chat is temporarily disabled by admin"
-            >
-              <MessageSquare className="w-6 h-6" />
-            </button>
-          )}
-
-          <motion.button
-            whileHover={{ scale: 1.1, rotate: 5 }}
-            whileTap={{ scale: 0.9 }}
-            onClick={() => setShowLeaderboard(true)}
-            className="bg-gradient-to-r from-amber-500 to-yellow-400 hover:from-amber-400 hover:to-yellow-300 p-4 rounded-full text-slate-950 shadow-[0_0_20px_rgba(250,204,21,0.4)] border border-yellow-300/30 cursor-pointer flex items-center justify-center transition-all"
-            title="Scoreboard"
-          >
-            <Trophy className="w-6 h-6 font-bold" />
-          </motion.button>
-        </div>
-
         {/* Main Games Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-5xl mx-auto w-full relative z-20">
           {visibleGames.map((game, i) => (
@@ -114,6 +76,39 @@ export const HomePage: React.FC<HomePageProps> = ({ onSelectGame }) => {
             </div>
           )}
         </div>
+      </div>
+
+      {/* Floating Utility Buttons (Bottom Left) */}
+      <div className="fixed bottom-6 left-6 flex flex-col md:flex-row items-start md:items-center gap-4 z-50">
+        {isGameActive('global-chat') ? (
+          <motion.button
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.9 }}
+            onClick={handleOpenChat}
+            className="bg-indigo-600 hover:bg-indigo-500 p-4 rounded-full text-white shadow-[0_0_20px_rgba(79,70,229,0.4)] border border-indigo-400/20 cursor-pointer flex items-center justify-center transition-colors"
+            title="Global Chat Room"
+          >
+            <MessageSquare className="w-6 h-6" />
+          </motion.button>
+        ) : (
+          <button
+            disabled
+            className="bg-slate-800/40 p-4 rounded-full text-slate-600 border border-slate-700/20 opacity-50 cursor-not-allowed flex items-center justify-center"
+            title="Chat is temporarily disabled by admin"
+          >
+            <MessageSquare className="w-6 h-6" />
+          </button>
+        )}
+
+        <motion.button
+          whileHover={{ scale: 1.1, rotate: 5 }}
+          whileTap={{ scale: 0.9 }}
+          onClick={() => setShowLeaderboard(true)}
+          className="bg-gradient-to-r from-amber-500 to-yellow-400 hover:from-amber-400 hover:to-yellow-300 p-4 rounded-full text-slate-950 shadow-[0_0_20px_rgba(250,204,21,0.4)] border border-yellow-300/30 cursor-pointer flex items-center justify-center transition-all"
+          title="Scoreboard"
+        >
+          <Trophy className="w-6 h-6 font-bold" />
+        </motion.button>
       </div>
 
       <LeaderboardModal isOpen={showLeaderboard} onClose={() => setShowLeaderboard(false)} />
