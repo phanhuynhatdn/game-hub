@@ -21,6 +21,9 @@ export const HomePage: React.FC<HomePageProps> = ({ onSelectGame }) => {
   const [showChat, setShowChat] = useState(false);
   const [showLoginPrompt, setShowLoginPrompt] = useState(false);
 
+  // Dynamic game configurations (Admin control visibility)
+  const [gameConfigs, setGameConfigs] = useState<any[]>([]);
+
   // Leaderboard States
   const [selectedGameId, setSelectedGameId] = useState("minesweeper");
   const [scores, setScores] = useState<any[]>([]);
@@ -35,6 +38,25 @@ export const HomePage: React.FC<HomePageProps> = ({ onSelectGame }) => {
   const socketRef = useRef<Socket | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const chatScrollContainerRef = useRef<HTMLDivElement>(null);
+
+  // Fetch active game list from backend
+  useEffect(() => {
+    fetchWithAuth("/games/config")
+      .then((configs) => {
+        if (Array.isArray(configs)) {
+          setGameConfigs(configs);
+        }
+      })
+      .catch((err) => {
+        console.error("Failed to load game config visibility:", err);
+      });
+  }, []);
+
+  // Filter games based on database visibility config (Default is true/visible)
+  const visibleGames = GAME_REGISTRY.filter((game) => {
+    const cfg = gameConfigs.find((c) => c.gameId === game.id);
+    return cfg ? cfg.isActive : true;
+  });
 
   // Auto-scroll chat to bottom
   const scrollToBottom = () => {
@@ -194,7 +216,7 @@ export const HomePage: React.FC<HomePageProps> = ({ onSelectGame }) => {
 
         {/* Staggered Game Cards List */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 px-4">
-          {GAME_REGISTRY.map((game, index) => (
+          {visibleGames.map((game, index) => (
             <GameCard 
               key={game.id} 
               game={game} 

@@ -1,10 +1,11 @@
 import React, { useState, useEffect, Suspense } from 'react';
-import { LogOut } from 'lucide-react';
+import { LogOut, Settings } from 'lucide-react';
 import { GAME_REGISTRY } from './core/config/gameRegistry';
 import { HomePage } from './components/HomePage';
 import { AppRoute } from './types/common.types';
 import { LanguageSwitcher } from './components/LanguageSwitcher';
 import { fetchWithAuth, logout } from './core/services/api';
+import { AdminDashboard } from './features/admin/AdminDashboard';
 
 const App: React.FC = () => {
   const [mode, setMode] = useState<AppRoute>(AppRoute.HOME);
@@ -32,10 +33,12 @@ const App: React.FC = () => {
       fetchWithAuth('/auth/profile')
         .then((profile) => {
           setUser(profile);
+          localStorage.setItem('username', profile.username); // save to use in chat
         })
         .catch((err) => {
           console.error('Failed to load profile:', err);
           localStorage.removeItem('token');
+          localStorage.removeItem('username');
         })
         .finally(() => {
           setLoadingUser(false);
@@ -53,6 +56,15 @@ const App: React.FC = () => {
         {/* User Panel / Google Login Button */}
         {user ? (
           <div className="flex items-center gap-3 bg-slate-900/60 border border-white/10 backdrop-blur-md px-4 py-2 rounded-2xl text-white shadow-glass select-none">
+            {user.role === 'ADMIN' && (
+              <button
+                onClick={() => setMode(AppRoute.ADMIN)}
+                className="p-1 hover:text-indigo-400 text-slate-400 transition-colors mr-1 cursor-pointer flex items-center justify-center"
+                title="Admin Dashboard"
+              >
+                <Settings className="w-4 h-4" />
+              </button>
+            )}
             {user.avatarUrl ? (
               <img src={user.avatarUrl} alt="Avatar" className="w-8 h-8 rounded-full border border-indigo-500/30" referrerPolicy="no-referrer" />
             ) : (
@@ -98,6 +110,9 @@ const App: React.FC = () => {
 
       {/* Route: Home */}
       {mode === AppRoute.HOME && <HomePage onSelectGame={(route) => setMode(route as AppRoute)} />}
+
+      {/* Route: Admin */}
+      {mode === AppRoute.ADMIN && <AdminDashboard onBack={() => setMode(AppRoute.HOME)} />}
 
       {/* Route: Dynamic Games */}
       {SelectedGame && (
