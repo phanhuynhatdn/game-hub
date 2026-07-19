@@ -7,7 +7,7 @@ export interface GameMetadata {
   descriptionKey: string;
   icon: string;
   thumbnailColor: string;
-  component: React.LazyExoticComponent<any>;
+  component: React.LazyExoticComponent<React.ComponentType<{ onBack: () => void }>>;
 }
 
 export const GAME_REGISTRY: GameMetadata[] = [

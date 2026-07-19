@@ -7,7 +7,7 @@ export const useIdleProgression = () => {
   useEffect(() => {
     setChillPoints(getChillPoints());
 
-    let intervalId: NodeJS.Timeout;
+    let intervalId: ReturnType<typeof setInterval>;
 
     const startTimer = () => {
       intervalId = setInterval(() => {

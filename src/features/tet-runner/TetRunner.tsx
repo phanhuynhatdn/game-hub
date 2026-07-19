@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import { motion } from "framer-motion";
 import { Home } from "lucide-react";
 import { useTetRunner } from "./hooks/useTetRunner";
-import { fetchWithAuth } from "../../core/services/api";
+import { scoresApi } from "../../core/services/scores.api";
 import { CANVAS_BASE_WIDTH, CANVAS_BASE_HEIGHT } from "./utils/constants";
 import { TetRunnerState } from "./types";
 import { IdleOverlay } from "./components/IdleOverlay";
@@ -37,14 +37,11 @@ const TetRunner: React.FC<TetRunnerProps> = ({ onBack }) => {
   useEffect(() => {
     if (state === TetRunnerState.GAMEOVER && score > 0) {
       if (localStorage.getItem('token')) {
-        fetchWithAuth('/scores', {
-          method: 'POST',
-          body: JSON.stringify({
-            gameId: 'tet-runner',
-            score: score,
-            timeInSec: 30, // Mock duration
-          }),
-        }).catch((err) => console.error('Failed to submit score:', err));
+        scoresApi.submitScore({
+          gameId: 'tet-runner',
+          score: score,
+          timeInSec: 30, // Mock duration
+        }).catch((err: any) => console.error('Failed to submit score:', err));
       }
     }
   }, [state, score]);

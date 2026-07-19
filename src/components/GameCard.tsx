@@ -20,7 +20,7 @@ export const GameCard: React.FC<GameCardProps> = ({ game, onSelect, index }) => 
       y: 0,
       opacity: 1,
       transition: {
-        type: "spring",
+        type: "spring" as const,
         stiffness: 100,
         damping: 15,
         delay: index * 0.1,

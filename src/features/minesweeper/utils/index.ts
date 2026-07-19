@@ -1,4 +1,4 @@
-import { Cell, GameConfig } from "../types";
+import { Cell, CellState, GameConfig } from "../types";
 
 export const initBoard = (
   config: GameConfig,
@@ -13,7 +13,7 @@ export const initBoard = (
         .map(() => ({
           isMine: false,
           neighborMines: 0,
-          state: "hidden" as const,
+          state: CellState.HIDDEN,
         })),
     );
 
@@ -71,9 +71,9 @@ export const revealCell = (
 
   const reveal = (r: number, c: number) => {
     if (r < 0 || r >= config.rows || c < 0 || c >= config.cols) return;
-    if (newBoard[r][c].state !== "hidden") return;
+    if (newBoard[r][c].state !== CellState.HIDDEN) return;
 
-    newBoard[r][c].state = "revealed";
+    newBoard[r][c].state = CellState.REVEALED;
 
     if (newBoard[r][c].neighborMines === 0 && !newBoard[r][c].isMine) {
       for (let dr = -1; dr <= 1; dr++) {

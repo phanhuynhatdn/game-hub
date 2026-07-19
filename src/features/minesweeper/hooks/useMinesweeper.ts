@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { initBoard, revealCell } from "../utils";
-import { fetchWithAuth } from "../../../core/services/api";
+import { scoresApi } from "../../../core/services/scores.api";
 
 import {
   playClickSound,
@@ -109,14 +109,11 @@ export const useMinesweeper = (difficulty: Difficulty) => {
 
         // Submit score to backend if logged in
         if (localStorage.getItem('token')) {
-          fetchWithAuth('/scores', {
-            method: 'POST',
-            body: JSON.stringify({
-              gameId: 'minesweeper',
-              score: finalScore,
-              timeInSec: time,
-            }),
-          }).catch((err) => console.error('Failed to submit score:', err));
+          scoresApi.submitScore({
+            gameId: 'minesweeper',
+            score: finalScore,
+            timeInSec: time,
+          }).catch((err: any) => console.error('Failed to submit score:', err));
         }
       }
     },
