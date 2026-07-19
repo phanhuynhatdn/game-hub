@@ -216,6 +216,12 @@ const TetRunner: React.FC<TetRunnerProps> = ({ onBack }) => {
           {t("tetRunner.hint")}
         </p>
       </div>
+
+      {/* Banner Ad Slot Placeholder */}
+      <div className="mt-8 w-full max-w-4xl mx-auto h-[90px] bg-slate-950/20 border border-white/5 backdrop-blur-md rounded-2xl flex flex-col items-center justify-center text-[10px] text-slate-600 font-bold tracking-[0.2em] uppercase select-none relative z-10">
+        <span>Advertisement Slot</span>
+        <span className="text-[8px] text-slate-700 font-medium mt-1">728x90 Leaderboard Banner</span>
+      </div>
     </div>
   );
 };

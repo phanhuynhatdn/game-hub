@@ -1,16 +1,70 @@
 import React, { useState, useEffect, Suspense } from 'react';
-import { LogOut, Settings } from 'lucide-react';
+import { LogOut, Settings, Palette, Check, Lock, X } from 'lucide-react';
 import { GAME_REGISTRY } from './core/config/gameRegistry';
 import { HomePage } from './components/HomePage';
 import { AppRoute } from './types/common.types';
 import { LanguageSwitcher } from './components/LanguageSwitcher';
 import { fetchWithAuth, logout } from './core/services/api';
 import { AdminDashboard } from './features/admin/AdminDashboard';
+import { useTranslation } from 'react-i18next';
+import { motion, AnimatePresence } from 'framer-motion';
+
+const AVAILABLE_THEMES = [
+  { id: 'COASTAL', name: 'Coastal Theme 🏖️', desc: 'Free & Default starry sky' },
+  { id: 'RICEFIELD', name: 'Ricefield Theme 🌾', desc: 'Golden & green emerald field (Premium)' },
+  { id: 'CYBERPUNK', name: 'Cyberpunk Theme 🌆', desc: 'Neon magenta and cyan retro grid (Premium)' },
+  { id: 'SUNSET', name: 'Sunset Theme 🌅', desc: 'Warm orange and purple horizon (Premium)' },
+  { id: 'SNOWY', name: 'Snowy Theme ❄️', desc: 'Chilly white and sky blue winter (Premium)' },
+];
+
+const getThemeBackdrop = (theme: string = 'COASTAL') => {
+  switch (theme) {
+    case 'RICEFIELD':
+      return (
+        <div className="fixed inset-0 z-0 overflow-hidden pointer-events-none">
+          <div className="absolute top-1/4 left-1/4 w-80 md:w-96 h-80 md:h-96 rounded-full bg-emerald-600/15 blur-[100px]"></div>
+          <div className="absolute bottom-1/4 right-1/4 w-80 md:w-96 h-80 md:h-96 rounded-full bg-amber-600/10 blur-[120px]"></div>
+        </div>
+      );
+    case 'CYBERPUNK':
+      return (
+        <div className="fixed inset-0 z-0 overflow-hidden pointer-events-none">
+          <div className="absolute top-1/4 left-1/4 w-80 md:w-96 h-80 md:h-96 rounded-full bg-fuchsia-600/15 blur-[100px]"></div>
+          <div className="absolute bottom-1/4 right-1/4 w-80 md:w-96 h-80 md:h-96 rounded-full bg-cyan-500/10 blur-[120px]"></div>
+        </div>
+      );
+    case 'SUNSET':
+      return (
+        <div className="fixed inset-0 z-0 overflow-hidden pointer-events-none">
+          <div className="absolute top-1/4 left-1/4 w-80 md:w-96 h-80 md:h-96 rounded-full bg-orange-500/15 blur-[100px]"></div>
+          <div className="absolute bottom-1/4 right-1/4 w-80 md:w-96 h-80 md:h-96 rounded-full bg-purple-600/10 blur-[120px]"></div>
+        </div>
+      );
+    case 'SNOWY':
+      return (
+        <div className="fixed inset-0 z-0 overflow-hidden pointer-events-none">
+          <div className="absolute top-1/4 left-1/4 w-80 md:w-96 h-80 md:h-96 rounded-full bg-sky-200/10 blur-[100px]"></div>
+          <div className="absolute bottom-1/4 right-1/4 w-80 md:w-96 h-80 md:h-96 rounded-full bg-slate-400/10 blur-[120px]"></div>
+        </div>
+      );
+    case 'COASTAL':
+    default:
+      return (
+        <div className="fixed inset-0 z-0 overflow-hidden pointer-events-none">
+          <div className="absolute top-1/4 left-1/4 w-80 md:w-96 h-80 md:h-96 rounded-full bg-indigo-700/15 blur-[100px]"></div>
+          <div className="absolute bottom-1/4 right-1/4 w-80 md:w-96 h-80 md:h-96 rounded-full bg-rose-600/10 blur-[120px]"></div>
+        </div>
+      );
+  }
+};
 
 const App: React.FC = () => {
+  const { t } = useTranslation();
   const [mode, setMode] = useState<AppRoute>(AppRoute.HOME);
   const [user, setUser] = useState<any>(null);
   const [loadingUser, setLoadingUser] = useState<boolean>(false);
+  const [showThemeSelector, setShowThemeSelector] = useState<boolean>(false);
+  const [showDonateModal, setShowDonateModal] = useState<boolean>(false);
 
   // Parse JWT token from URL query parameters (Google OAuth callback redirect)
   useEffect(() => {
@@ -33,7 +87,7 @@ const App: React.FC = () => {
       fetchWithAuth('/auth/profile')
         .then((profile) => {
           setUser(profile);
-          localStorage.setItem('username', profile.username); // save to use in chat
+          localStorage.setItem('username', profile.username);
         })
         .catch((err) => {
           console.error('Failed to load profile:', err);
@@ -46,16 +100,51 @@ const App: React.FC = () => {
     }
   }, []);
 
+  const handleSelectTheme = async (themeId: string) => {
+    if (!user) return;
+    
+    // Check if theme is unlocked
+    const isUnlocked = user.unlockedThemes?.includes(themeId) || themeId === 'COASTAL';
+    if (!isUnlocked) {
+      setShowThemeSelector(false);
+      setShowDonateModal(true);
+      return;
+    }
+
+    try {
+      const result = await fetchWithAuth('/auth/theme', {
+        method: 'PUT',
+        body: JSON.stringify({ theme: themeId }),
+      });
+      setUser((prev: any) => ({ ...prev, activeTheme: result.activeTheme }));
+    } catch (err) {
+      console.error('Failed to update active background theme:', err);
+    }
+  };
+
   // Find selected game from registry
   const SelectedGame = GAME_REGISTRY.find(g => g.id === mode);
 
   return (
     <Suspense fallback={<div className="min-h-screen bg-[#030014] flex items-center justify-center text-white text-2xl font-bold animate-pulse">Loading...</div>}>
+      {/* Global Glow Backdrop Spheres */}
+      {getThemeBackdrop(user?.activeTheme)}
+
       {/* Global Utilities Header (Top Right) */}
       <div className="fixed top-6 right-6 z-50 flex items-center gap-3">
         {/* User Panel / Google Login Button */}
         {user ? (
           <div className="flex items-center gap-3 bg-slate-900/60 border border-white/10 backdrop-blur-md px-4 py-2 rounded-2xl text-white shadow-glass select-none">
+            {/* Theme Selector Palette icon */}
+            <button
+              onClick={() => setShowThemeSelector(true)}
+              className="p-1 hover:text-indigo-400 text-slate-400 transition-colors mr-1 cursor-pointer flex items-center justify-center"
+              title="Change background theme"
+            >
+              <Palette className="w-4 h-4" />
+            </button>
+
+            {/* Admin Dashboard gear icon */}
             {user.role === 'ADMIN' && (
               <button
                 onClick={() => setMode(AppRoute.ADMIN)}
@@ -65,6 +154,7 @@ const App: React.FC = () => {
                 <Settings className="w-4 h-4" />
               </button>
             )}
+            
             {user.avatarUrl ? (
               <img src={user.avatarUrl} alt="Avatar" className="w-8 h-8 rounded-full border border-indigo-500/30" referrerPolicy="no-referrer" />
             ) : (
@@ -118,6 +208,120 @@ const App: React.FC = () => {
       {SelectedGame && (
         <SelectedGame.component onBack={() => setMode(AppRoute.HOME)} />
       )}
+
+      {/* Theme Selector Modal Popup */}
+      <AnimatePresence>
+        {showThemeSelector && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 bg-slate-950/70 backdrop-blur-md flex items-center justify-center p-4 text-white select-none"
+          >
+            <motion.div
+              initial={{ scale: 0.9, y: 15 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0.9, y: 15 }}
+              className="bg-slate-900/90 border border-white/10 p-6 rounded-3xl w-full max-w-md shadow-glass relative"
+            >
+              <button
+                onClick={() => setShowThemeSelector(false)}
+                className="absolute top-4 right-4 text-slate-400 hover:text-white cursor-pointer"
+              >
+                <X className="w-5 h-5" />
+              </button>
+
+              <Palette className="w-10 h-10 text-indigo-400 mx-auto mb-3" />
+              <h3 className="text-center font-black text-lg tracking-wider uppercase mb-1">
+                BACKGROUND THEMES
+              </h3>
+              <p className="text-center text-xs text-slate-400 mb-6">
+                Choose your favorite glow scenery backdrop
+              </p>
+
+              <div className="space-y-3">
+                {AVAILABLE_THEMES.map((theme) => {
+                  const isUnlocked = user?.unlockedThemes?.includes(theme.id) || theme.id === 'COASTAL';
+                  const isActive = user?.activeTheme === theme.id;
+                  
+                  return (
+                    <div
+                      key={theme.id}
+                      onClick={() => handleSelectTheme(theme.id)}
+                      className={`flex items-center justify-between p-3.5 rounded-2xl border transition-all cursor-pointer ${
+                        isActive
+                          ? 'bg-indigo-600/20 border-indigo-500/40 text-indigo-200 shadow-glass-glow'
+                          : isUnlocked
+                          ? 'bg-slate-950/30 border-white/5 text-slate-200 hover:bg-white/5'
+                          : 'bg-slate-950/70 border-white/5 opacity-50 text-slate-500'
+                      }`}
+                    >
+                      <div>
+                        <span className="text-sm font-bold block">{theme.name}</span>
+                        <span className="text-[10px] text-slate-500 mt-0.5 block">{theme.desc}</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        {isActive ? (
+                          <div className="w-5 h-5 bg-indigo-600 rounded-full flex items-center justify-center text-white">
+                            <Check className="w-3.5 h-3.5 stroke-[3px]" />
+                          </div>
+                        ) : !isUnlocked ? (
+                          <Lock className="w-4 h-4 text-slate-500" />
+                        ) : null}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Donate / Upgrade Modal Dialog */}
+      <AnimatePresence>
+        {showDonateModal && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 bg-slate-950/70 backdrop-blur-md flex items-center justify-center p-4 text-white text-center select-none"
+          >
+            <motion.div
+              initial={{ scale: 0.9, y: 15 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0.9, y: 15 }}
+              className="bg-slate-900/90 border border-white/10 p-6 rounded-3xl w-full max-w-sm shadow-glass relative"
+            >
+              <button
+                onClick={() => setShowDonateModal(false)}
+                className="absolute top-4 right-4 text-slate-400 hover:text-white cursor-pointer"
+              >
+                <X className="w-5 h-5" />
+              </button>
+
+              <Trophy className="w-12 h-12 text-yellow-400 mx-auto mb-4 drop-shadow-[0_0_8px_rgba(250,204,21,0.4)] animate-bounce" />
+              <h3 className="text-lg font-black tracking-wide mb-2 uppercase">Unlock Premium Theme</h3>
+              <p className="text-slate-400 text-sm mb-6 leading-relaxed">
+                Độ màu ưa thích của bạn bằng cách donate ủng hộ để mở khóa vĩnh viễn hình nền cao cấp này!
+              </p>
+
+              <div className="p-4 bg-slate-950/50 border border-white/5 rounded-2xl mb-6 text-left space-y-2">
+                <p className="text-xs text-slate-400">💳 Nộp tiền ủng hộ qua MoMo/Ngân hàng:</p>
+                <p className="text-sm font-bold text-slate-200">BIDV: 31210000XXXXXX</p>
+                <p className="text-[10px] text-slate-500">Nội dung chuyển khoản kèm theo Username của bạn để Admin duyệt mở khóa ngay lập tức!</p>
+              </div>
+
+              <button
+                onClick={() => setShowDonateModal(false)}
+                className="w-full py-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold transition-all shadow-glass cursor-pointer"
+              >
+                Đồng ý
+              </button>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </Suspense>
   );
 };

@@ -176,13 +176,9 @@ export const HomePage: React.FC<HomePageProps> = ({ onSelectGame }) => {
   };
 
   return (
-    <div className="min-h-screen bg-[#030014] flex items-center justify-center p-4 md:p-8 overflow-hidden relative">
+    <div className="min-h-screen bg-transparent flex items-center justify-center p-4 md:p-8 overflow-hidden relative">
       {/* 1. Starry cursor-following background */}
       <InteractiveBackdrop />
-
-      {/* 2. Floating Ambient Glow Spheres (Aurora) */}
-      <div className="absolute top-1/4 left-1/4 w-80 md:w-96 h-80 md:h-96 rounded-full bg-indigo-700/15 blur-[100px] pointer-events-none z-0"></div>
-      <div className="absolute bottom-1/4 right-1/4 w-80 md:w-96 h-80 md:h-96 rounded-full bg-rose-600/10 blur-[120px] pointer-events-none z-0"></div>
 
       <div className="relative z-10 text-center max-w-6xl w-full py-12 md:py-20">
         
@@ -226,12 +222,18 @@ export const HomePage: React.FC<HomePageProps> = ({ onSelectGame }) => {
           ))}
         </div>
 
+        {/* Banner Ad Slot Placeholder */}
+        <div className="mt-16 w-full max-w-4xl mx-auto h-[90px] bg-slate-950/20 border border-white/5 backdrop-blur-md rounded-2xl flex flex-col items-center justify-center text-[10px] text-slate-600 font-bold tracking-[0.2em] uppercase select-none">
+          <span>Advertisement Slot</span>
+          <span className="text-[8px] text-slate-700 font-medium mt-1">970x90 Super Leaderboard</span>
+        </div>
+
         {/* Footer */}
         <motion.div 
           initial={{ opacity: 0 }}
           animate={{ opacity: 0.6 }}
           transition={{ delay: 0.8, duration: 1 }}
-          className="mt-20 text-slate-500 text-xs font-semibold tracking-[0.2em] uppercase max-w-md mx-auto"
+          className="mt-10 text-slate-500 text-xs font-semibold tracking-[0.2em] uppercase max-w-md mx-auto"
         >
           {t("home.footer")}
         </motion.div>
@@ -240,15 +242,25 @@ export const HomePage: React.FC<HomePageProps> = ({ onSelectGame }) => {
       {/* 3. Floating Action Controls (FABs - Bottom Right) */}
       <div className="fixed bottom-6 right-6 z-40 flex flex-col sm:flex-row gap-3">
         {/* Chat Toggle Button */}
-        <motion.button
-          whileHover={{ scale: 1.1 }}
-          whileTap={{ scale: 0.9 }}
-          onClick={handleOpenChat}
-          className="bg-indigo-600 hover:bg-indigo-500 p-4 rounded-full text-white shadow-glass-glow border border-indigo-400/20 cursor-pointer flex items-center justify-center"
-          title="Global Chat Room"
-        >
-          <MessageSquare className="w-6 h-6" />
-        </motion.button>
+        {isGameActive('global-chat') ? (
+          <motion.button
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.9 }}
+            onClick={handleOpenChat}
+            className="bg-indigo-600 hover:bg-indigo-500 p-4 rounded-full text-white shadow-glass-glow border border-indigo-400/20 cursor-pointer flex items-center justify-center"
+            title="Global Chat Room"
+          >
+            <MessageSquare className="w-6 h-6" />
+          </motion.button>
+        ) : (
+          <button
+            disabled
+            className="bg-slate-800/40 p-4 rounded-full text-slate-600 border border-slate-700/20 opacity-50 cursor-not-allowed flex items-center justify-center"
+            title="Chat is temporarily disabled by admin"
+          >
+            <MessageSquare className="w-6 h-6" />
+          </button>
+        )}
 
         {/* Leaderboard Toggle Button */}
         <motion.button
